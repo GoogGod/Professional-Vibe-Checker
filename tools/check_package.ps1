@@ -1,10 +1,10 @@
 <#
 .SYNOPSIS
-Проверка пакета на запрещённые сущности: имена/маркеры соревнований, личные пути, кандидаты флагов.
+Package check: forbidden entities (competition names/markers, personal paths, flag candidates).
 
 .DESCRIPTION
-Коды выхода: 0 — чисто; 1 — нарушения (имена/маркеры); 2 — есть кандидаты на ручную проверку.
-Whitelist: C:\Users\suspect — известный учебный пример в материалах библиотеки; плейсхолдеры <user> допустимы.
+Exit codes: 0 - clean; 1 - violations; 2 - review candidates present.
+Whitelist: C:\Users\suspect (known training example in library materials); <user> placeholders allowed.
 
 .EXAMPLE
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/check_package.ps1
@@ -25,17 +25,17 @@ $flagCand = $files | Select-String -Pattern '[A-Za-z0-9_]{2,24}\{[A-Za-z0-9_@!#$
 
 function Show($title, $items, $limit = 20) {
   $items = @($items)
-  "== $title: $($items.Count) =="
+  "== ${title}: $($items.Count) =="
   $items | Select-Object -First $limit | ForEach-Object {
     $t = $_.Line.Trim(); if ($t.Length -gt 140) { $t = $t.Substring(0, 140) }
     "  {0}:{1}: {2}" -f $_.Filename, $_.LineNumber, $t
   }
 }
 
-Show 'нарушения (имена/маркеры)' $nameHits
-Show 'личные пути (проверить)' $pathHits
-Show 'кандидаты флагов (проверить)' $flagCand
+Show 'violations (names/markers)' $nameHits
+Show 'personal paths (review)' $pathHits
+Show 'flag candidates (review)' $flagCand
 
-if (@($nameHits).Count -gt 0) { Write-Output 'РЕЗУЛЬТАТ: 1 (нарушения)'; exit 1 }
-if ((@($pathHits).Count -gt 0) -or (@($flagCand).Count -gt 0)) { Write-Output 'РЕЗУЛЬТАТ: 2 (нужна ручная проверка кандидатов)'; exit 2 }
-Write-Output 'РЕЗУЛЬТАТ: 0 (чисто)'
+if (@($nameHits).Count -gt 0) { Write-Output 'RESULT: 1 (violations)'; exit 1 }
+if ((@($pathHits).Count -gt 0) -or (@($flagCand).Count -gt 0)) { Write-Output 'RESULT: 2 (manual review needed)'; exit 2 }
+Write-Output 'RESULT: 0 (clean)'

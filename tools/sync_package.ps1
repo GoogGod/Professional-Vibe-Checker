@@ -1,11 +1,11 @@
 <#
 .SYNOPSIS
-Синхронизация скиллов пакета в каталог скиллов платформы (например, Artex).
+Sync package skills into a platform skills directory (e.g., Artex).
 
 .DESCRIPTION
-Копирует package/skills/* в целевой каталог:cкиллы платформа привязывает по ИМЕНИ КАТАЛОГА,
-поэтому каталоги не переименовываются — только содержимое.
-С -IncludeLibrary дополнительно копируется package/library/skills/*.
+Copies package/skills/* into the target skills directory.
+Platforms bind skills by DIRECTORY NAME, so directories are never renamed - only contents are updated.
+With -IncludeLibrary also copies package/library/skills/*.
 
 .EXAMPLE
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/sync_package.ps1 -SkillsTarget "C:\platform\skills"
@@ -29,11 +29,11 @@ if ($IncludeLibrary) { $sources['library'] = (Join-Path $PackageDir 'library\ski
 $report = @()
 foreach ($srcName in $sources.Keys) {
   $src = $sources[$srcName]
-  if (-not (Test-Path $src)) { Write-Warning "пропуск (нет каталога): $src"; continue }
+  if (-not (Test-Path $src)) { Write-Warning "skip (missing dir): $src"; continue }
   foreach ($skillDir in (Get-ChildItem $src -Directory)) {
     $name = $skillDir.Name
     $srcSkill = Join-Path $skillDir.FullName 'SKILL.md'
-    if (-not (Test-Path $srcSkill)) { Write-Warning "пропуск (нет SKILL.md): $name"; continue }
+    if (-not (Test-Path $srcSkill)) { Write-Warning "skip (no SKILL.md): $name"; continue }
     $dst = Join-Path $SkillsTarget $name
     $status = 'add'
     if (Test-Path $dst) {
@@ -51,4 +51,4 @@ foreach ($srcName in $sources.Keys) {
 
 $report | Sort-Object Source, Skill | Format-Table -AutoSize | Out-String | Write-Output
 $changed = @($report | Where-Object { $_.Status -ne 'unchanged' }).Count
-Write-Output ("итого: {0} скиллов, к изменению: {1} (DryRun={2})" -f $report.Count, $changed, [bool]$DryRun)
+Write-Output ("total: {0} skills, to change: {1} (DryRun={2})" -f $report.Count, $changed, [bool]$DryRun)
