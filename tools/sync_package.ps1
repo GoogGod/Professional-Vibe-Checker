@@ -13,13 +13,17 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools/sync_package.ps1 -Skil
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/sync_package.ps1 -SkillsTarget "..." -DryRun
 #>
 param(
-  [string]$PackageDir = (Join-Path $PSScriptRoot '..\package'),
+  [string]$PackageDir,
   [Parameter(Mandatory = $true)][string]$SkillsTarget,
   [switch]$IncludeLibrary,
   [switch]$DryRun
 )
 
 $ErrorActionPreference = 'Stop'
+$ScriptDir = $PSScriptRoot
+if (-not $ScriptDir) { $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path }
+if (-not $ScriptDir) { $ScriptDir = (Get-Location).Path }
+if (-not $PackageDir) { $PackageDir = Join-Path $ScriptDir '..\package' }
 $PackageDir = (Resolve-Path $PackageDir).Path
 if (-not (Test-Path $SkillsTarget)) { New-Item -ItemType Directory -Force -Path $SkillsTarget | Out-Null }
 
