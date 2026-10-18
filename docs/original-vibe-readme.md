@@ -1,5 +1,3 @@
-Here is a funny, scannable description for a Professional Vibe Checker (Red Team Info Sec Agent), written like a real Git repository README.
-
 🕵️‍♂️ git-vibe-check
 
 Professional Vibe Checker is a lightweight, zero-trust, highly aggressive human emulation framework designed to brutally audit your organization’s social engineering vulnerabilities. While blue teams watch the firewalls, we watch your employees fold under mild psychological pressure.
@@ -26,7 +24,3 @@ We don't hack code. We hack vibes.
 🤝 Contributing
 
 If you want to contribute to the vibe check, please drop your building access codes in the issues tab. (Don't worry, it's open source).
-If you want to tweak this description, let me know:
-• Should we focus more on physical break-ins or digital phishing?
-• Do you want the humor to be more corporate or more chaotic?
-• Should we add a "How to Install" section detailing how they dress up?
