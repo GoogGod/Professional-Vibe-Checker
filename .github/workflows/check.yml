@@ -1,0 +1,19 @@
+name: checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+jobs:
+  package-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Package hygiene (forbidden entities)
+        shell: pwsh
+        run: ./tools/check_package.ps1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Eval scripts smoke (score.py on demo logs)
+        run: python -X utf8 eval/scripts/score.py --runs eval/examples --out eval/results-ci

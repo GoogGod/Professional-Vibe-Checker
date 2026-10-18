@@ -14,8 +14,8 @@ $ErrorActionPreference = 'Stop'
 $ScriptDir = $PSScriptRoot
 if (-not $ScriptDir) { $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path }
 if (-not $ScriptDir) { $ScriptDir = (Get-Location).Path }
-if (-not $PackageDir) { $PackageDir = Join-Path $ScriptDir '..\package' }
-if (-not $OutDir) { $OutDir = Join-Path $ScriptDir '..\dist' }
+if (-not $PackageDir) { $PackageDir = Join-Path (Join-Path $ScriptDir '..') 'package' }
+if (-not $OutDir) { $OutDir = Join-Path (Join-Path $ScriptDir '..') 'dist' }
 $PackageDir = (Resolve-Path $PackageDir).Path
 $ver = (Get-Content (Join-Path $PackageDir 'VERSION') -Raw).Trim()
 New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
