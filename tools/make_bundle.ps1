@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-Собрать zip-архив пакета для передачи + SHA256SUMS.
+Build a transferable package zip + SHA256SUMS.
 
 .EXAMPLE
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/make_bundle.ps1
@@ -30,4 +30,4 @@ $lines | Set-Content -Path $sums -Encoding UTF8
 $zipHash = (Get-FileHash $zip -Algorithm SHA256).Hash.ToLower()
 "zip:  {0} ({1} KB)" -f $zip, [math]::Round((Get-Item $zip).Length / 1KB, 1)
 "sha256(zip): $zipHash"
-"sums: {0} ({1} файлов)" -f $sums, $lines.Count
+"sums: {0} ({1} files)" -f $sums, $lines.Count
