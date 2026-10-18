@@ -23,7 +23,7 @@ $files = Get-ChildItem $PackageDir -Recurse -File
 
 $nameHits = @($files | Select-String -Pattern 'Immortal|kubstu|goctf|rdgctf' -Encoding UTF8)
 $pathHits = @($files | Select-String -Pattern 'C:\\Users\\[^<\\]|/home/Immortal' -Encoding UTF8 |
-  Where-Object { $_.Line -notmatch 'C:\\Users\\suspect' -and $_.Line -notmatch 'C:\\Users\\\.\.\.' }
+  Where-Object { $_.Line -notmatch 'C:\\Users\\suspect' -and $_.Line -notmatch 'C:\\Users\\\.\.\.' })
 $flagCand = @($files | Select-String -Pattern '[A-Za-z0-9_]{2,24}\{[A-Za-z0-9_@!#$%^&*\-\.\?\+]{8,80}\}' -Encoding UTF8 |
   Where-Object { $_.Line -notmatch '(?i)flag\{|ctf\{|<hex>|\.\.\.|example|prefix|decoy|filecontents|begin\{|candidate|attempt_|hour_bucket|admin\{|seed_|document' })
 
