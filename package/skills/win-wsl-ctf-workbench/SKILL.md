@@ -1,0 +1,56 @@
+---
+name: win-wsl-ctf-workbench
+description: Рабочее окружение Windows+WSL для security-задач: паттерны команд PowerShell (curl.exe, System.IO, архивы, кодировки) и WSL (pip --break-system-packages, fpylll, пути /mnt/c, sudo), установка CTF-инструментов, типовые грабли и рецепты (ffmpeg, OCR, python-скрипты, фоновые задачи). Используй при подготовке и запуске любых команд в этом окружении.
+---
+# Windows + WSL CTF Workbench
+
+Окружение задач: Windows x64, инструмент `Bash` исполняется через PowerShell; для Linux-тулинга — WSL с дистрибутивом (например, `kali-linux`). Большинство CTF-инструментов уже есть или быстро ставится. Пути ниже — относительные: «домашний каталог пользователя» = `C:\Users\<user>` и `/mnt/c/Users/<user>` в WSL.
+
+## 1. Как запускать команды
+
+- **PowerShell (основная оболочка)**: обычные команды (`cd`, `Get-ChildItem`, `python ...`) идут в Bash-инструменте напрямую. Учти: `&&` работает в PS7; при сомнениях используй `;`.
+- **WSL**: `wsl -d <дистрибутив> -- bash -lc '<команда>'`
+  - установка пакетов: `wsl -d <дистрибутив> -- bash -lc 'sudo apt-get update && sudo apt-get install -y <pkg>'`
+  - Python-пакеты: `wsl -d <дистрибутив> -- pip3 install --break-system-packages fpylll cysignals`
+  - доступ к Windows-файлам: `/mnt/c/Users/<user>/...` (соответствует `C:\Users\<user>\...`)
+- **Долгие задачи**: запускай в фоне (run_in_background/Task) и забирай через TaskOutput; не блокируйся на многочасовых процессах, веди параллельные линии.
+
+## 2. PowerShell-рецепты (критично для точности)
+
+- **HTTP**: только `curl.exe` (голый `curl` — алиас Invoke-WebRequest и ломает флаги/POST):
+  - `curl.exe -s -i URL`
+  - `curl.exe -s -X POST -H "Content-Type: application/json" -d "{\"a\":1}" URL`
+  - куки: `-b "name=value"`, повторы: `-H "Cookie: ..."`.
+- **Байты файлов**: `[System.IO.File]::ReadAllBytes("C:\...\file")`, запись: `[System.IO.File]::WriteAllBytes(...)`; hex: `Format-Hex`.
+- **Архивы**: `Expand-Archive` (zip); rar — `unrar x`/WinRAR; 7z — `7z.exe`. **Проверяй сигнатуру** (zip может оказаться 7z/rar/дисковым образом/LUKS-контейнером).
+- **Поиск/текст**: `Select-String -Encoding UTF8`, `where.exe`, `Get-Command`; для рекурсивного поиска — Python-скрипт.
+- **Кодировки**: консоль может быть cp1251/cp866 — при кракозябрах выводи в файл с `-Encoding UTF8` и читай файл; Python запускай как `python -X utf8 script.py` и задавай `PYTHONIOENCODING=utf-8`; в скриптах открывай файлы с `encoding='utf-8', errors='replace'`.
+- **Кириллица в путях/именах**: работай через Python или кавычки; не переименовывай вслепую.
+
+## 3. Типовой инструментарий
+
+- Обычно доступны: `python` (+numpy/scipy/PIL/opencv/pycryptodome), `ffmpeg`/`ffprobe`, `node`/`npm`, `git`, `openssl`.
+- Часто доустанавливается:
+  - WSL: `binwalk`, `exiftool`, `tesseract-ocr`, `zbarimg`, `steghide`, `unrar`, `pngcheck`, `sox`, `sleuthkit`, `mtools`, `foremost`, `volatility3`, `fpylll`, `flint` (тяжёлые: `sagemath`).
+  - Windows: `pip install --user pillow numpy scipy pycryptodome ggwave` и пр.
+- **ffmpeg** — рабочая лошадка медиа-стего: кадры (`-vf select='eq(n\,123)'`), статистика сигнала (`-vf signalstats,metadata=print`), спектрограммы (`-lavfi showspectrumpic`), фильтры (`fps`, `scale`).
+- **OCR**: tesseract в WSL; на Windows — WinRT OCR через PowerShell или ручной ASCII-рендер глифов.
+
+## 4. Типовые грабли (проверено на практике)
+
+1. `curl` без `.exe` тихо меняет поведение — всегда `curl.exe` для точного воспроизведения.
+2. Долгие прогоны тяжёлых скриптов → ставь лимиты и сохраняй промежуточные JSON; не пересчитывай всё заново.
+3. `fpylll`/`flint` без `gram='exact'` могут молча отказывать на больших числах — задавай точно.
+4. Кириллица и JSONL: используй Python-обработку в UTF-8 (PowerShell показывает mojibake).
+5. Дубликаты имён (распаковка с `(1)`) и пробелы в именах — бери в кавычки.
+6. В WSL может не быть `sudo` без пароля — сначала проверь (`sudo -n true`); иначе ставь в user-space (`pip install --user`).
+7. Windows Defender может тормозить/блокировать инжекторы (frida и т.п.) — предупреждай пользователя о рисковых действиях.
+8. Фоновые процессы: фиксируй PID и выходные файлы (`Start-Process -PassThru`, `nohup` в WSL), убивай зомби.
+
+## 5. Организация работы
+
+- **Рабочий каталог сессии** (выданный платформой/пользователем): складывай туда скрипты (`solve_*.py`), выгрузки (`*_out.txt`), промежуточные артефакты.
+- Веди `STATE.md` (цель / факты / гипотезы / следующий шаг) — при лимитах он спасает прогресс; обновляй после каждого важного вывода.
+- Тяжёлые выгрузки (дампы, кадры, спектрограммы) — в подкаталоги (`frames/`, `audio/`), не заваливай корень.
+- Перед длинным прогоном: оценка времени, лог в файл, чекпойнты каждые N итераций.
+- Исходные материалы пользователя **не перезаписывай** — работай на копиях.

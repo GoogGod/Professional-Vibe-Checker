@@ -1,32 +1,47 @@
-Here is a funny, scannable description for a Professional Vibe Checker (Red Team Info Sec Agent), written like a real Git repository README.
+# Professional Vibe Checker — рабочий репозиторий Red Team Agent Kit
 
-🕵️‍♂️ git-vibe-check
+> «We don't hack code. We hack vibes.» — дух стартового README сохранён в [`docs/original-vibe-readme.md`](docs/original-vibe-readme.md) 😎
 
-Professional Vibe Checker is a lightweight, zero-trust, highly aggressive human emulation framework designed to brutally audit your organization’s social engineering vulnerabilities. While blue teams watch the firewalls, we watch your employees fold under mild psychological pressure.
-We don't hack code. We hack vibes.
+Рабочий репозиторий для двух связанных вещей:
 
-🚀 Core Capabilities (Features)
+1. **`package/`** — переносимый пакет Red Team / CTF-агента: системный промпт + скиллы + база знаний. Спроектирован так, чтобы работать автономно (относительные ссылки, без личных путей) и передаваться как архив. Начинать с [`package/START-HERE.md`](package/START-HERE.md).
+2. **`eval/`** — «Vibe Check»: воспроизводимая методика честного сравнения «агент с пакетом» vs «тот же агент без пакета» (быстрее ориентируется? решает надёжнее?). Начинать с [`eval/PROTOCOL.md`](eval/PROTOCOL.md).
 
-• Advanced Badging Bypass: The ability to look incredibly annoyed while holding a clipboard, forcing 98% of employees to hold the secure door open for us.
-• Proximity Compliment Injection: Disarming security guards by complimenting their shoes before stealing their master keys.
-• Industrial-Grade Gaslighting: Convincing a senior executive that they actually forgot their password, resulting in them writing it down on a sticky note for us.
-• Phishing with Rizz: Creating emails so perfectly tailored to your team's specific internal drama that clicking the malicious link is irresistible.
+## Структура
 
-🛠️ Tech Stack & Tooling
+```
+package/     переносимый пакет Red Team агента
+  system-prompt.md      системный промпт
+  skills/               8 авторских скиллов (agentskills.io-формат)
+  library/              категорийная библиотека скиллов (ctf-*, os-*)
+  lessons/, tactics/, toolbox/   база знаний
+  flags/                только политика: флаги НЕ хранятся
+  VERSION, CHANGELOG.md
+eval/        протокол A/B (Vibe Check), шаблоны, скрипты, примеры
+tools/       обслуживание: sync_package.ps1, make_bundle.ps1, check_package.ps1
+docs/        исходные материалы и заметки
+```
 
-• Hardware: 1x Unwashed Hi-Vis Vest, 1x Clipboard (Carbon Fiber), 1x Empty Starbucks Cup (Size: Venti).
-• Software: Clipboard.exe, IntenseEyeContact.sh, ConfidentNod.py.
-• OS Support: Operates seamlessly across Corporate, Startup, and Government environments.
+## Быстрый старт
 
-⚠️ Known Issues / Bugs
+```powershell
+# 1) Собрать zip пакета для передачи:
+pwsh tools\make_bundle.ps1
+# 2) Проверить пакет на запрещённые сущности (флаги/личные пути/имена):
+pwsh tools\check_package.ps1
+# 3) Синхронизировать скиллы пакета в каталог скиллов платформы:
+pwsh tools\sync_package.ps1 -SkillsTarget <path-to-skills>
+# 4) Оценка агента — см. eval/README.md
+```
 
-• Bug #404: Extremely susceptible to actual, competent security guards who ask for ID. (Workaround: Pretend to be on an important phone call and walk away rapidly).
-• Bug #418: Coffee intake exceeds recommended hardware limits. May cause jittery tailgating.
+## Правила (короткие)
 
-🤝 Contributing
+1. В репозитории **нет флагов и секретов**; генерация флагов запрещена (в т. ч. «для отвода внимания»).
+2. Пакет самодостаточен: относительные ссылки; архив ≠ текущая задача.
+3. Метрики экспериментов **предзарегистрированы** (`eval/PROTOCOL.md`) и не меняются задним числом.
+4. Публикуются все результаты, включая отрицательные.
 
-If you want to contribute to the vibe check, please drop your building access codes in the issues tab. (Don't worry, it's open source).
-If you want to tweak this description, let me know:
-• Should we focus more on physical break-ins or digital phishing?
-• Do you want the humor to be more corporate or more chaotic?
-• Should we add a "How to Install" section detailing how they dress up?
+## Статус
+
+- Пакет: v0.2.0 (2026-10-18).
+- Пилот Vibe Check: план в `eval/PROTOCOL.md` §12; задачи собираются.
