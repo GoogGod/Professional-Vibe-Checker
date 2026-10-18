@@ -23,12 +23,12 @@ $ErrorActionPreference = 'Stop'
 $ScriptDir = $PSScriptRoot
 if (-not $ScriptDir) { $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path }
 if (-not $ScriptDir) { $ScriptDir = (Get-Location).Path }
-if (-not $PackageDir) { $PackageDir = Join-Path $ScriptDir '..\package' }
+if (-not $PackageDir) { $PackageDir = Join-Path (Join-Path $ScriptDir '..') 'package' }
 $PackageDir = (Resolve-Path $PackageDir).Path
 if (-not (Test-Path $SkillsTarget)) { New-Item -ItemType Directory -Force -Path $SkillsTarget | Out-Null }
 
 $sources = [ordered]@{ 'skills' = (Join-Path $PackageDir 'skills') }
-if ($IncludeLibrary) { $sources['library'] = (Join-Path $PackageDir 'library\skills') }
+if ($IncludeLibrary) { $sources['library'] = Join-Path (Join-Path $PackageDir 'library') 'skills' }
 
 $report = @()
 foreach ($srcName in $sources.Keys) {
