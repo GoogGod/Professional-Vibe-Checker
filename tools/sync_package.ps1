@@ -1,20 +1,26 @@
 <#
 .SYNOPSIS
-Sync package skills into a platform skills directory (e.g., Artex).
+Sync package skills into a platform skills directory (e.g., Artex); optionally mirror the knowledge base.
 
 .DESCRIPTION
 Copies package/skills/* into the target skills directory.
 Platforms bind skills by DIRECTORY NAME, so directories are never renamed - only contents are updated.
 With -IncludeLibrary also copies package/library/skills/*.
 
+With -KBTarget also mirrors package/ into the knowledge-base directory (robocopy /MIR).
+IMPORTANT: the /XD local exclusion keeps <KB>\local\ intact - that is the agents' writeback zone
+(hermes-knowledge-loop). Never remove /XD from the mirror, or agent lessons get wiped on every release.
+
 .EXAMPLE
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/sync_package.ps1 -SkillsTarget "C:\platform\skills"
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/sync_package.ps1 -SkillsTarget "..." -IncludeLibrary
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/sync_package.ps1 -SkillsTarget "..." -KBTarget "C:\platform\data\knowledge-base"
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/sync_package.ps1 -SkillsTarget "..." -DryRun
 #>
 param(
   [string]$PackageDir,
   [Parameter(Mandatory = $true)][string]$SkillsTarget,
+  [string]$KBTarget,
   [switch]$IncludeLibrary,
   [switch]$DryRun
 )
@@ -56,3 +62,17 @@ foreach ($srcName in $sources.Keys) {
 $report | Sort-Object Source, Skill | Format-Table -AutoSize | Out-String | Write-Output
 $changed = @($report | Where-Object { $_.Status -ne 'unchanged' }).Count
 Write-Output ("total: {0} skills, to change: {1} (DryRun={2})" -f $report.Count, $changed, [bool]$DryRun)
+
+# --- Knowledge-base mirror (optional) ---
+# /XD local keeps the agents' writeback zone (<KB>\local\) untouched by the mirror.
+if ($KBTarget) {
+  if (-not (Test-Path $KBTarget)) { New-Item -ItemType Directory -Force -Path $KBTarget | Out-Null }
+  New-Item -ItemType Directory -Force -Path (Join-Path $KBTarget 'local') | Out-Null
+  if ($DryRun) {
+    Write-Output "KB mirror: DRY-RUN skipped (would robocopy /MIR /XD local '$PackageDir' -> '$KBTarget')"
+  } else {
+    robocopy $PackageDir $KBTarget /MIR /XD local /NFL /NDL /NJH /NJS /NP | Out-Null
+    if ($LASTEXITCODE -ge 8) { throw "robocopy KB mirror failed (exit $LASTEXITCODE)" }
+    Write-Output "KB mirror: done (local/ preserved), exit $LASTEXITCODE"
+  }
+}
