@@ -37,8 +37,15 @@ for ch in range(3):
                 po[x, y] = ((px.getpixel((x, y))[ch] >> bit) & 1) * 255 > 0
         out.save(f'plane_c{ch}_b{bit}.png')
 ```
-Затем: `tesseract plane_c0_b0.png stdout` по каждому файлу. Текст в LSB обычно читается OCR после нормализации в ч/б.
+Затем: `tesseract plane_c0_b0.png stdout` по каждому файлу. Мелкий/бледный текст не читается без подготовки: `convert plane.png -resize 400% -threshold 50% big.png` → tesseract на big.png (для сплошного текста `--psm 6`).
 - Палитровые PNG/GIF: уникальных цветов подозрительно мало? Декодер палитры в 1-битные маски (тот же приём).
+- **Слепые зоны zsteg** (порядок пикселей ≠ растровый): column-major, побитная сборка msb-first, канал целиком, альфа-канал RGBA, 2-й/3-й бит. Не перебирай руками — скрипт `toolbox/lsb_harvest.py` из базы пакета:
+
+```sh
+python3 lsb_harvest.py f.png --show 3    # перебор order/каналы/бит/msb — топ по printable+magic, hexdump
+python3 lsb_harvest.py f.png --runs      # серии >=8 по плоскостям: аномалия = вложение
+python3 lsb_harvest.py f.png --extract row,RGB,0,lsb,8192 > payload.bin
+```
 
 **JPG (с потерями → прятать в LSB нельзя, значит контейнер/пароль/мета):**
 - `stegseek file.jpg /usr/share/wordlists/rockyou.txt` (steghide-брут; перебор по SecLists passwords тоже).
@@ -48,6 +55,8 @@ for ch in range(3):
 **GIF/WebP:** разложить кадры `ffmpeg -i f.gif frame_%03d.png`; аномальные задержки кадров (`exiftool` по кадрам); WebP → конвертировать в PNG и пройти §PNG.
 
 **Каждое изображение:** `tesseract f.png stdout` на оригинал тоже (видимый мелкий текст/водяные знаки).
+
+**PDF/офис-документы:** `qpdf --qdf in.pdf out.pdf` + `mutool show in.pdf` (потоки-объекты, скрытые слои); OOXML (docx/xlsx/pptx) — это zip: `unzip -l`, смотреть `word/media/`, `docProps/`, `xl/media/` — вложенные картинки прогоняются как отдельные изображения §2.
 
 ## 3. Аудио
 
@@ -71,6 +80,7 @@ tesseract spec.png stdout                            # текст в спект�
 
 - энтропия по каналам/планам (норма ~7.9 для фото, выше — доп. сжатие/шифр);
 - доля единиц в LSB каждого канала (норма ≈ 0.5; заметное отклонение = вложение);
+- метрика длинных серий бит по плоскостям (`lsb_harvest.py --runs`): у чистого фото серии короткие, текстовый/структурный payload даёт аномально длинные;
 - zsteg verbose: chi-square-статистика по планам;
 - гистограмма: обрезанные/пустые младшие значения;
 - количество уникальных цветов; размеры payload-кандидатов из binwalk;
