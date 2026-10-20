@@ -55,6 +55,18 @@ def printable_ratio(data):
     ok = sum(1 for c in data if 32 <= c < 127 or c in (9, 10, 13))
     return ok / len(data)
 
+def best_prefix_ratio(data):
+    """Лучший печатаемый префикс: короткий payload тонет в шуме LSB-хвоста,
+    поэтому оцениваем окна разной длины и берём максимум."""
+    best = (0.0, 0)
+    for w in (16, 32, 64, 128, 256, 512, 1024, 4096):
+        if len(data) < w:
+            break
+        r = printable_ratio(data[:w])
+        if r > best[0]:
+            best = (r, w)
+    return best
+
 def has_magic(data):
     return any(m in data[:64] for m in MAGICS)
 
@@ -91,11 +103,11 @@ def main():
     w, h = rgb.size
 
     if mode == '--runs':
-        print(f'# runs>=8 ratio per plane (аномалия против ровного фона соседних плоскостей = вложение)')
+        print('# runs>=8 ratio per plane (anomaly vs neighbors = embedded payload)')
         for ch, cn in [(0, 'R'), (1, 'G'), (2, 'B')] + ([(3, 'A')] if has_alpha else []):
             for bit in (0, 1, 2, 3):
                 r = runs_ratio(rgb, ch, bit)
-                print(f'{cn} bit{bit}: {r:.4f}  {"<-- аномалия" if r > 0.05 else ""}')
+                print(f'{cn} bit{bit}: {r:.4f}  {"<-- anomaly" if r > 0.05 else ""}')
         return
 
     if mode == '--extract':
@@ -107,7 +119,7 @@ def main():
         sys.stdout.buffer.write(take_bytes(bg, n, bitord == 'msb'))
         return
 
-    # режим перебора
+    # top candidates by best printable prefix / magic
     show = 3
     if '--show' in args:
         show = int(args[args.index('--show') + 1])
@@ -120,21 +132,21 @@ def main():
                 for msb in (False, True):
                     bg = gen_bits(px, w, h, order, chperm, bit, msb)
                     data = take_bytes(bg, 4096, msb)
-                    pr = printable_ratio(data)
+                    pr, win = best_prefix_ratio(data)
                     mg = has_magic(data)
-                    if pr > 0.6 or mg:
-                        results.append((pr, mg, order, ''.join(
+                    if pr >= 0.9 or mg:
+                        results.append((pr, win, mg, order, ''.join(
                             'RGBA'[c] for c in chperm), bit, 'msb' if msb else 'lsb', data))
-    results.sort(key=lambda r: (r[1], r[0]), reverse=True)
+    results.sort(key=lambda r: (r[2], r[0]), reverse=True)
     if not results:
-        print('# кандидатов с printable>0.6 или magic нет — LSB-текст маловероятен;')
-        print('# проверь --runs, хвост после IEND, exif, другие контейнеры (см. скилл stego-workbench)')
+        print('# no candidates (no printable prefix >= 0.9, no magic):')
+        print('# LSB text unlikely; check --runs, tail after IEND, exif, other containers (see skill stego-workbench)')
         return
-    print(f'# всего кандидатов: {len(results)}; топ:')
-    for i, (pr, mg, order, chn, bit, bo, data) in enumerate(results[:10]):
+    print(f'# candidates: {len(results)}; top:')
+    for i, (pr, win, mg, order, chn, bit, bo, data) in enumerate(results[:10]):
         tag = ' MAGIC' if mg else ''
-        print(f'{i+1}. printable={pr:.3f}{tag}  order={order} ch={chn} bit={bit} bits={bo}')
-    for i, (pr, mg, order, chn, bit, bo, data) in enumerate(results[:show]):
+        print(f'{i+1}. prefix_ratio={pr:.2f} (first {win}B){tag}  order={order} ch={chn} bit={bit} bits={bo}')
+    for i, (pr, win, mg, order, chn, bit, bo, data) in enumerate(results[:show]):
         print(f'--- hexdump candidate {i+1} ({order},{chn},bit{bit},{bo}) ---')
         for off in range(0, min(256, len(data)), 16):
             chunk = data[off:off+16]
