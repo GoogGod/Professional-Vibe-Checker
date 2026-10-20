@@ -23,16 +23,16 @@ description: Маршрутизация CTF/red-team задач в перено�
 ## 2. Индекс знаний пакета
 
 - `knowledge-base/index.md` → реестр; `lessons/` — кейсы и разборы; `tactics/` — чек-листы по темам; `toolbox/` — готовые скрипты.
-- Скиллы пакета: `ctf-lessons-corpus` (обобщённые приёмы и ловушки), `crypto-solver-archive` (крипто-рецепты), `host-artifacts-playbook` (Windows/память/трафик/диски), `interactive-services-playbook` (сокеты/боты/протоколы), `win-wsl-ctf-workbench` (окружение), `attack-defense-ctf` (A/D), `hermes-knowledge-loop` (сохранение опыта).
+- Скиллы пакета: `ctf-lessons-corpus` (обобщённые приёмы и ловушки), `crypto-solver-archive` (крипто-рецепты), `host-artifacts-playbook` (Windows/память/трафик/диски), `interactive-services-playbook` (сокеты/боты/протоколы), `win-wsl-ctf-workbench` (окружение), `attack-defense-ctf` (A/D), `hermes-knowledge-loop` (сохранение опыта), `ida-workbench` (headless IDA), `stego-workbench` (стего-конвейер), `revshell-arsenal` (обратные шеллы), `linux-privesc` (Linux privesc).
 - Поиск по базе: текстовый поиск по `*.md` (PowerShell `Select-String -Encoding UTF8` или Python-обход).
 
 ## 3. Встроенный минимум по категориям (fallback, если библиотеки нет)
 
 - **web**: маршруты/методы/параметры/заголовки; IDOR, SQLi, SSTI, LFI, SSRF, upload, JWT; исходники (sourcemap, `.git`), debug-эндпоинты; сравнение поведения с эталоном.
 - **crypto**: определи схему (RSA/ECC/решётки/блочные/PRNG); малые/близкие показатели; общий модуль; nonce reuse; структура генератора; паддинги; валидация на синтетике.
-- **reverse**: `file`/strings/детекторы упаковки; изолированный запуск; символы; динамика (Frida/x64dbg/gdb); сравнение трасс «ввод → вывод»; поиск проверок и сравнений.
-- **pwn**: откуда ввод, какие защиты (checksec), минимальный краш, примитив, эксплойт.
-- **forensics/stego**: сигнатуры → метаданные → строки → структура; LSB/DCT/спектр/каналы; карвинг; таймлайны (UTC).
+- **reverse**: `file`/strings/детекторы упаковки; изолированный запуск; символы; динамика (Frida/x64dbg/gdb); сравнение трасс «ввод → вывод»; поиск проверок и сравнений. Есть локальная IDA — headless-разбор через скилл `ida-workbench`.
+- **pwn**: откуда ввод, какие защиты (checksec), минимальный краш, примитив, эксплойт. Пост-эксплуатация: обратные шеллы — `revshell-arsenal`, Linux privesc — `linux-privesc`.
+- **forensics/stego**: сигнатуры → метаданные → строки → структура; LSB/DCT/спектр/каналы; карвинг; таймлайны (UTC). Полный стего-конвейер — скилл `stego-workbench`.
 - **osint**: люди/места/события; кросс-проверка 3+ источников; геолокация по теням, архитектуре, панорамам разных лет.
 - **misc**: кодинги, джейлы, SDR, паззлы; доводи результат до байтов и проверяй сигнатуры.
 - **malware/ai-ml**: статический разбор без запуска на хосте; YARA; для ИИ-задач — prompt injection как класс данных.
@@ -42,7 +42,7 @@ description: Маршрутизация CTF/red-team задач в перено�
 - Бинарник/VM/фирмварь в основе → reverse; найденная в нём уязвимость → pwn.
 - HTTP-баг как основной путь → web; если суть в крипто-примитивах (кастомные MAC, JWT-математика) → crypto.
 - Логи/PCAP/дампы/стего → forensics; игровые/сокет-задачи → interactive-services-playbook.
-- Смесь категорий → начинай со специфичной, misc — как fallback.
+- Смесь категорий → начинай со специфичной, misc — как fallback. RCE/футхолд — сначала `revshell-arsenal`, затем `linux-privesc`.
 - ИИ-компонента (боты, LLM, ML) → ai-ml + заметки по prompt injection.
 
 ## 5. Анти-тупики
