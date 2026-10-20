@@ -23,7 +23,7 @@ description: Маршрутизация CTF/red-team задач в перено�
 ## 2. Индекс знаний пакета
 
 - `knowledge-base/index.md` → реестр; `lessons/` — кейсы и разборы; `tactics/` — чек-листы по темам; `toolbox/` — готовые скрипты.
-- Скиллы пакета: `ctf-lessons-corpus` (обобщённые приёмы и ловушки), `crypto-solver-archive` (крипто-рецепты), `host-artifacts-playbook` (Windows/память/трафик/диски), `interactive-services-playbook` (сокеты/боты/протоколы), `win-wsl-ctf-workbench` (окружение), `attack-defense-ctf` (A/D), `hermes-knowledge-loop` (сохранение опыта), `ida-workbench` (headless IDA), `stego-workbench` (стего-конвейер), `revshell-arsenal` (обратные шеллы), `linux-privesc` (Linux privesc).
+- Скиллы пакета: `ctf-lessons-corpus` (обобщённые приёмы и ловушки), `crypto-solver-archive` (крипто-рецепты), `host-artifacts-playbook` (Windows/память/трафик/диски), `interactive-services-playbook` (сокеты/боты/протоколы), `win-wsl-ctf-workbench` (окружение), `attack-defense-ctf` (A/D), `hermes-knowledge-loop` (сохранение опыта), `ida-workbench` (headless IDA), `stego-workbench` (стего-конвейер), `osint-workbench` (osint-конвейер: артефакт-паспорт, геолокация по чек-листу, фальсифицируемость гипотез), `revshell-arsenal` (обратные шеллы), `linux-privesc` (Linux privesc).
 - Поиск по базе: текстовый поиск по `*.md` (PowerShell `Select-String -Encoding UTF8` или Python-обход).
 
 ## 3. Встроенный минимум по категориям (fallback, если библиотеки нет)
@@ -33,7 +33,7 @@ description: Маршрутизация CTF/red-team задач в перено�
 - **reverse**: `file`/strings/детекторы упаковки; изолированный запуск; символы; динамика (Frida/x64dbg/gdb); сравнение трасс «ввод → вывод»; поиск проверок и сравнений. Есть локальная IDA — headless-разбор через скилл `ida-workbench`.
 - **pwn**: откуда ввод, какие защиты (checksec), минимальный краш, примитив, эксплойт. Пост-эксплуатация: обратные шеллы — `revshell-arsenal`, Linux privesc — `linux-privesc`.
 - **forensics/stego**: сигнатуры → метаданные → строки → структура; LSB/DCT/спектр/каналы; карвинг; таймлайны (UTC). Полный стего-конвейер — скилл `stego-workbench`.
-- **osint**: люди/места/события; кросс-проверка 3+ источников; геолокация по теням, архитектуре, панорамам разных лет.
+- **osint**: артефакт-паспорт (EXIF/GPS/скриншоты) → геолокация по чек-листу признаков (номера, знаки, тени, инфраструктура) → поиск по нику/домену; фальсифицируемость: гипотеза = предсказания, 5+ независимых подтверждений. Полный конвейер — скилл `osint-workbench`.
 - **misc**: кодинги, джейлы, SDR, паззлы; доводи результат до байтов и проверяй сигнатуры.
 - **malware/ai-ml**: статический разбор без запуска на хосте; YARA; для ИИ-задач — prompt injection как класс данных.
 
