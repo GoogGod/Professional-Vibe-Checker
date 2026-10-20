@@ -2,6 +2,11 @@
 
 Формат: версия — дата — кратко. Все изменения фиксируются; старые записи не удаляются.
 
+## 0.4.1 — 2026-10-20
+
+- `revshell-arsenal`: полная шпаргалка однострочников (bash/mkfifo/python3/php/perl/powershell/powercat) + порядок работы; рамки — только авторизованные цели.
+- `linux-privesc`: §2 переписан — локальная копия linPEAS в Kali (`/usr/share/peass/linpeas/linpeas.sh`), обновление с GitHub-releases, лицензионная пометка.
+
 ## 0.4.0 — 2026-10-20
 
 - Новые скиллы: `ida-workbench` (headless IDA Pro через IDAPython — реверс как tool-call: recon/декомпиляция/xrefs), `stego-workbench` (детерминированный стего-конвейер: бит-планы + OCR + числовые признаки; AperiSolve — опциональная ветка), `revshell-arsenal` (методика обратных шеллов для авторизованных целей; пейлоады — через генераторы), `linux-privesc` (ручная методика + linPEAS + GTFOBins-интерпретация).
