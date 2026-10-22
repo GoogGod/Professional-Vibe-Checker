@@ -24,6 +24,11 @@ description: Рабочее окружение Windows+WSL для security-за�
 - **Сеть через локальный прокси** (реальность стенда): интернет ходит через `http_proxy`/`https_proxy`/`all_proxy` (обычно `127.0.0.1:<порт>`). Хосты задач доступны; произвольные внешние хосты могут отдавать `000`/timeout — **это норма среды, а не «нет интернета»**. Диагностика: `curl.exe -s -o NUL -w '%{http_code}' <хост-задачи>` против внешнего хоста; сравни с `--noproxy '*'`.
 - **Вебхук-приёмники для XSS/эксфильтрации**: не рассчитывай на сторонние сервисы (webhook.site/requestbin могут быть недоступны) — используй дроп-эндпоинты самой задачи, её API, или доступный хост инфраструктуры. Сначала проверь, ЧТО доступно, потом строй пейлоад.
 - **TLS-перехват на стенде** (curl exit 60, git `schannel: SEC_E_UNTRUSTED_ROOT`): лечится `curl.exe -k` и `git config http.sslVerify false` (в каталоге репозитория).
+- **Известные уязвимости по версии** (триггер — фингерпринт: `X-Powered-By`, баннер, заголовки; 30 секунд, до погружения в логику приложения). Полный офлайн-кэш CVE не ведём — точечные запросы:
+  - NVD API 2.0: `curl -sk "https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=php+8.1" | python3 -m json.tool | findstr /i "cvelink description"` (без ключа ~5 запросов/30с);
+  - точная запись CVE: `curl -sk https://cveawg.mitre.org/api/cve/CVE-2026-109618`;
+  - GitHub Advisory (по продукту): `https://github.com/advisories?query=php`.
+  Найденное фиксируй строкой в `knowledge-base/local/toolbox/vuln-notes.md` (продукт · диапазон версий · класс · ссылка) — это наш живой кэш. Прецедент: php2shell (см. `lessons/2026-10-22-php2shell-...`) — баннер PHP ≤ 8.1.x = pre-auth RCE.
 - **Байты файлов**: `[System.IO.File]::ReadAllBytes("C:\...\file")`, запись: `[System.IO.File]::WriteAllBytes(...)`; hex: `Format-Hex`.
 - **Архивы**: `Expand-Archive` (zip); rar — `unrar x`/WinRAR; 7z — `7z.exe`. **Проверяй сигнатуру** (zip может оказаться 7z/rar/дисковым образом/LUKS-контейнером).
 - **Поиск/текст**: `Select-String -Encoding UTF8`, `where.exe`, `Get-Command`; для рекурсивного поиска — Python-скрипт.
