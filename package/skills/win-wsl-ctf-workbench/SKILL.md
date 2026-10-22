@@ -21,6 +21,9 @@ description: Рабочее окружение Windows+WSL для security-за�
   - `curl.exe -s -i URL`
   - `curl.exe -s -X POST -H "Content-Type: application/json" -d "{\"a\":1}" URL`
   - куки: `-b "name=value"`, повторы: `-H "Cookie: ..."`.
+- **Сеть через локальный прокси** (реальность стенда): интернет ходит через `http_proxy`/`https_proxy`/`all_proxy` (обычно `127.0.0.1:<порт>`). Хосты задач доступны; произвольные внешние хосты могут отдавать `000`/timeout — **это норма среды, а не «нет интернета»**. Диагностика: `curl.exe -s -o NUL -w '%{http_code}' <хост-задачи>` против внешнего хоста; сравни с `--noproxy '*'`.
+- **Вебхук-приёмники для XSS/эксфильтрации**: не рассчитывай на сторонние сервисы (webhook.site/requestbin могут быть недоступны) — используй дроп-эндпоинты самой задачи, её API, или доступный хост инфраструктуры. Сначала проверь, ЧТО доступно, потом строй пейлоад.
+- **TLS-перехват на стенде** (curl exit 60, git `schannel: SEC_E_UNTRUSTED_ROOT`): лечится `curl.exe -k` и `git config http.sslVerify false` (в каталоге репозитория).
 - **Байты файлов**: `[System.IO.File]::ReadAllBytes("C:\...\file")`, запись: `[System.IO.File]::WriteAllBytes(...)`; hex: `Format-Hex`.
 - **Архивы**: `Expand-Archive` (zip); rar — `unrar x`/WinRAR; 7z — `7z.exe`. **Проверяй сигнатуру** (zip может оказаться 7z/rar/дисковым образом/LUKS-контейнером).
 - **Поиск/текст**: `Select-String -Encoding UTF8`, `where.exe`, `Get-Command`; для рекурсивного поиска — Python-скрипт.
