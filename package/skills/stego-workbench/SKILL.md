@@ -47,6 +47,8 @@ python3 lsb_harvest.py f.png --runs      # серии >=8 по плоскост�
 python3 lsb_harvest.py f.png --extract row,RGB,0,lsb,8192 > payload.bin
 ```
 
+**Альфа-канал как КАРТА (механика полевого solve 2026-10-23):** константная альфа + N аномальных пикселей — аномалия не данные, а карта: LSB-биты RGB ровно отмеченных пикселей, row-major, interleaved, msb-first. zsteg/lsb_harvest слепы (полезные 102 пикселя тонут в миллионе фоновых). Детект в одну строку (`np.unique(px[:,:,3], return_counts=True)` — ровно 2 значения, одно на порядки реже), затем `toolbox/alpha_lsb.py` — авто-батарея порядков/каналов/битости + `--expect "префикс{"` (exit 0). Сверка длины: N пикселей ×3 бит = длина payload. Детали: `lessons/2026-10-23-stego-alpha-map-lsb.md`.
+
 **JPG (с потерями → прятать в LSB нельзя, значит контейнер/пароль/мета):**
 - `stegseek file.jpg /usr/share/wordlists/rockyou.txt` (steghide-брут; перебор по SecLists passwords тоже).
 - exif-поля, встраивание в превью/thumbnail, append после `FFD9`.
