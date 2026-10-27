@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""farm.py — молотилка A/D (skipper/Forcad-класс API), полевая версия v2.
+"""farm.py — молотилка A/D (класс jury/attack_data API), полевая версия v2.
 
 Цикл: config → ctftime(синхронизация с раундом) → attack_data → exploits/* →
       очередь флагов → батч PUT /api/v1/flags (дедуп, лимит/мин).
@@ -22,11 +22,11 @@ from concurrent.futures import ThreadPoolExecutor
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, BASE)
-JURY = os.environ.get("AD_JURY", "http://10.10.10.10")
-MY_IP = os.environ.get("AD_MY_IP", "10.80.1.2")
+JURY = os.environ.get("AD_JURY", "http://127.0.0.1:8020")
+MY_IP = os.environ.get("AD_MY_IP", "127.0.0.1")
 TOKEN_FILE = os.environ.get("AD_TOKEN_FILE", os.path.join(BASE, "..", "token.txt"))
 SEEN_FILE = os.path.join(BASE, "logs", "seen_flags.txt")
-FLAG_RE = re.compile(r"^[A-Z0-9]{31}=$")          # формат — из /api/client/config/!
+FLAG_RE = re.compile(r"^[A-Z0-9]{8,64}=?$")       # формат — из /api/client/config/!
 CYCLE_SLEEP = 10                                    # сек между циклами (вне round-sync)
 SUBMIT_PER_MIN = 100                                # лимит чести: <120/мин
 RETIRE_AFTER = 25                                   # попыток без флагов → подсказка RETIRE

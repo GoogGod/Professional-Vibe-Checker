@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""mock_jury.py — репетиционный стенд A/D (skipper/Forcad-класс API), только stdlib.
+"""mock_jury.py — репетиционный стенд A/D (класс jury/attack_data API), только stdlib.
 
 Назначение: прогнать ВЕСЬ конвейер (farm.py + watch.py + эксплойты + сабмит +
 Volga-петлю + откат патча) за день до турнира, без сети и жюри.
@@ -21,9 +21,9 @@ Volga-петлю + откат патча) за день до турнира, б�
 Репетиция:
   python3 mock_jury.py &                       # стенд
   echo mock-token > token.txt
-  AD_JURY=http://127.0.0.1:8020 AD_MY_IP=10.80.7.2 \
+  AD_JURY=http://127.0.0.1:8020 AD_MY_IP=127.0.0.7 \
     AD_TOKEN_FILE=token.txt python3 farm.py    # молотилка (эксплойты в exploits/)
-  AD_JURY=http://127.0.0.1:8020 AD_MY_IP=10.80.7.2 python3 watch.py
+  AD_JURY=http://127.0.0.1:8020 AD_MY_IP=127.0.0.7 python3 watch.py
 """
 import json, random, re, string, threading, time
 import urllib.request
@@ -31,11 +31,11 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 ROUND_SEC = 10          # раунд 10 с (в бою 60)
 FLAG_ROUNDS = 5         # флаг живёт 5 раундов
-TEAMS = [{"id": i, "name": f"team{i:02d}", "ip": f"10.80.{i}.2"} for i in range(1, 8)]
+TEAMS = [{"id": i, "name": f"team{i:02d}", "ip": f"127.0.0.{i}"} for i in range(1, 8)]
 MY = TEAMS[-1]          # мы — последняя команда
 TASKS = [{"id": 1, "name": "notes"}, {"id": 2, "name": "vault"}]
 TOKEN = "mock-token"
-FLAG_RE = re.compile(r"^[A-Z0-9]{31}=$")
+FLAG_RE = re.compile(r"^[A-Z0-9]{8,64}=?$")
 
 state = {  # всё состояние стенда
     "round": 0, "running": True,

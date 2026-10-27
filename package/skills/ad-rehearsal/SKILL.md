@@ -14,9 +14,9 @@ description: Используй этот скилл за день до Attack/De
 
 ## Шаги (чек-лист)
 
-1. [ ] Развернуть стенд: `python3 mock_jury.py &` → ожидаем строку `mock jury up: :8020 jury, :8021 notes, :8022 vault; token=mock-token; мы = 10.80.7.2`.
+1. [ ] Развернуть стенд: `python3 mock_jury.py &` → ожидаем строку `mock jury up: :8020 jury, :8021 notes, :8022 vault; token=mock-token; мы = 127.0.0.7`.
 2. [ ] Собрать рабочую папку репетиции: копия `farm.py`/`watch.py`/`mock_jury.py`, `token.txt` = `mock-token`, эксплойты `exploits/exploit_notes.py` и `exploit_vault.py` (контракт `SERVICE/PORT/exploit(host,port,hints)`).
-3. [ ] Запустить ферму и вахтёра с env: `AD_JURY=http://127.0.0.1:8020`, `AD_MY_IP=10.80.7.2`, `AD_TOKEN_FILE=<абс.путь>/token.txt`; в фоне с логами на диск.
+3. [ ] Запустить ферму и вахтёра с env: `AD_JURY=http://127.0.0.1:8020`, `AD_MY_IP=127.0.0.7`, `AD_TOKEN_FILE=<абс.путь>/token.txt`; в фоне с логами на диск.
 4. [ ] Дать 3–5 раундов (раунд = 10 с) → проверить логи:
    - `farm.log` содержит `FLAG!` и `SUBMIT … Flag accepted! Earned 100 flag points!`;
    - `watch.log` тикает `round=N … notes=OK vault=OK`, счёт растёт;
@@ -29,7 +29,7 @@ description: Используй этот скилл за день до Attack/De
 
 - Сабмит-ответ: `Flag accepted! Earned 100 flag points!` (не `Invalid`, не `too old`).
 - Вахтёр при патче: `ALERT! MY SERVICE notes -> CORRUPT`.
-- scoreboard мока: у `10.80.7.2` растёт `score_display`, у всех `status_name=OK`.
+- scoreboard мока: у `127.0.0.7` растёт `score_display`, у всех `status_name=OK`.
 
 ## Готча (довушки) — из реального дебага
 
