@@ -1,6 +1,6 @@
 ---
 name: win-wsl-ctf-workbench
-description: Рабочее окружение Windows+WSL для security-задач: паттерны команд PowerShell (curl.exe, System.IO, архивы, кодировки) и WSL (pip --break-system-packages, fpylll, пути /mnt/c, sudo), установка CTF-инструментов, типовые грабли и рецепты (ffmpeg, OCR, python-скрипты, фоновые задачи). Используй при подготовке и запуске любых команд в этом окружении.
+description: Используй этот скилл, когда работаешь в окружении Windows+WSL: паттерны PowerShell (curl.exe, System.IO, архивы, кодировки), WSL (pip --break-system-packages, fpylll, пути /mnt/c, sudo), установка CTF-инструментов, экранирование, фоновые демоны и взаимодействие между ОС.
 ---
 # Windows + WSL CTF Workbench
 
