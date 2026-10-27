@@ -1,6 +1,6 @@
 ---
 name: linux-privesc
-description: Локальное повышение привилегий в Linux для CTF и лабораторий - ручная методика (sudo/SUID/capabilities/cron/PATH/конфиги), linPEAS как сканер, интерпретация находок и GTFOBins-однострочники. Используй сразу после получения низкопривилегированного шелла на Linux-цели.
+description: Используй этот скилл, когда получен шелл на Linux и нужно локальное повышение привилегий: sudo/SUID/capabilities/cron/PATH/конфиги, linPEAS как сканер, интерпретация находок, GTFOBins-однострочники. Для CTF и авторизованных лабораторий.
 ---
 # Linux Privesc — от www-data до root
 
@@ -69,3 +69,9 @@ sudo nmap --interactive → !sh               # старые nmap
 ## 6. Границы
 
 Только авторизованные цели; эксплойты ядра нестабильны — сохраняй стабильный доступ до их запуска (см. `revshell-arsenal`).
+
+## Готча (ловушки)
+- `sudo -l` показывает не все векторы: смотри capabilities (`getcap -r / 2>/dev/null`), setuid (`find / -perm -4000 -type f`), writable cron.d/systemd, PATH-подмену.
+- GTFOBins-команды запускай из того же окружения, где найден бинарь (env -i меняет результат).
+- При sudo на python/perl/awk используй интерпретатор, а не только bash.
+- Root-cron с wildcard (`*`) обходится tar/zip-флагами (--checkpoint-action).
