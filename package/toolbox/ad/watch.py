@@ -2,7 +2,7 @@
 """watch.py — вахтёр A/D v2: статусы своих сервисов + АНТИ-ДРЕНАЖ.
 
 Уроки турнира: (1) Volga — свой сервис не-OK → флаги с него сгорают, алерт немедленно;
-(2) статус OK ≠ нас не доят (у нас выкачали 609 флагов при зелёных статусах) —
+(2) статус OK ≠ нас не доят (у нас выкачали сотни флагов при зелёных статусах) —
 поэтому следим за /public/attacks: flag_stolen против нас = кормушка открыта.
 Запуск: setsid nohup python3 watch.py >> logs/watch.log 2>&1 &
 Конфиг: env AD_JURY, AD_MY_IP.
@@ -11,8 +11,8 @@
 import json, os, time, urllib.request
 
 BASE = os.path.dirname(os.path.abspath(__file__))
-JURY = os.environ.get("AD_JURY", "http://10.10.10.10")
-MY_IP = os.environ.get("AD_MY_IP", "10.80.1.2")
+JURY = os.environ.get("AD_JURY", "http://127.0.0.1:8020")
+MY_IP = os.environ.get("AD_MY_IP", "127.0.0.1")
 ALERTF = os.path.join(BASE, "logs", "alerts.log")
 LOG = lambda *a: print(time.strftime("%H:%M:%S"), *a, flush=True)
 
@@ -50,7 +50,7 @@ def main():
                 name = tasks.get(tt["task_id"], tt["task_id"])
                 stname = tt.get("status_name", "?")
                 line.append(f"{name}={stname}")
-                if tt.get("status") != 101:  # 101 = OK (Forcad-класс; сверяй с полем)
+                if tt.get("status") != 101:  # 101 = OK (сверяй с полем)
                     key = f"{name}:{stname}"
                     if last_bad.get(name) != key:
                         alert(f"MY SERVICE {name} -> {stname} "

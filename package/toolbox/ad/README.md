@@ -25,9 +25,9 @@ def exploit(host, port, hints):
 python3 mock_jury.py &                 # стенд (jury :8020, notes :8021, vault :8022)
 echo mock-token > token.txt
 # положи exploits/exploit_notes.py и exploit_vault.py (см. ниже смысл уязвимостей)
-AD_JURY=http://127.0.0.1:8020 AD_MY_IP=10.80.7.2 AD_TOKEN_FILE=token.txt \
+AD_JURY=http://127.0.0.1:8020 AD_MY_IP=127.0.0.7 AD_TOKEN_FILE=token.txt \
   setsid nohup python3 farm.py >> logs/farm.log 2>&1 &
-AD_JURY=http://127.0.0.1:8020 AD_MY_IP=10.80.7.2 python3 watch.py
+AD_JURY=http://127.0.0.1:8020 AD_MY_IP=127.0.0.7 python3 watch.py
 ```
 
 Тренируемые ситуации (все — руками через curl, смотри реакцию watch/farm):
