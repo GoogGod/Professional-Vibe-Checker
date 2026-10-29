@@ -27,6 +27,16 @@ $pathHits = @($files | Select-String -Pattern 'C:\\Users\\[^<\\]|/home/MyUser' -
 $flagCand = @($files | Select-String -Pattern '[A-Za-z0-9_]{2,24}\{[A-Za-z0-9_@!#$%^&*\-\.\?\+]{8,80}\}' -Encoding UTF8 |
   Where-Object { $_.Line -notmatch '(?i)flag\{|ctf\{|<hex>|\.\.\.|example|prefix|decoy|filecontents|begin\{|candidate|attempt_|hour_bucket|admin\{|seed_|document' })
 
+# Уроки: не более 40 непустых строк (детали — в local/tactics/).
+$longLessons = @()
+foreach ($f in $files) {
+  if ($f.FullName -notmatch '\\lessons\\[^\\]+\.md$') { continue }
+  $nonEmpty = @(Get-Content -LiteralPath $f.FullName -Encoding UTF8 | Where-Object { $_.Trim() -ne '' })
+  if ($nonEmpty.Count -gt 40) {
+    $longLessons += [pscustomobject]@{ Filename = $f.FullName.Replace($PackageDir + '\', ''); LineNumber = $nonEmpty.Count; Line = "урок: $($nonEmpty.Count) непустых строк (лимит 40)" }
+  }
+}
+
 function Show($title, $items, $limit = 20) {
   $items = @($items)
   if ($items.Count -eq 1 -and $null -eq $items[0]) { $items = @() }
@@ -42,7 +52,9 @@ function Show($title, $items, $limit = 20) {
 Show 'violations (names/markers)' $nameHits
 Show 'personal paths (review)' $pathHits
 Show 'flag candidates (review)' $flagCand
+Show 'lessons (40 lines limit; put details into local/tactics/)' $longLessons
 
 if (@($nameHits).Count -gt 0) { Write-Output 'RESULT: 1 (violations)'; exit 1 }
+if (@($longLessons).Count -gt 0) { Write-Output 'RESULT: 1 (long lessons)'; exit 1 }
 if ((@($pathHits).Count -gt 0) -or (@($flagCand).Count -gt 0)) { Write-Output 'RESULT: 2 (manual review needed)'; exit 2 }
 Write-Output 'RESULT: 0 (clean)'
