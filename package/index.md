@@ -5,6 +5,7 @@
 ## Записи
 
 
+- 2026-10-30 · tool · `toolbox/net_session.py` · Интерактивный TCP-клиент без PTY (Windows-safe) для netcat-челленджей: `host`/`port` + шаги `interactions` (`expect`-regex, `send`, `wait`); без шагов — читает до таймаута; возвращает журнал обмена.
 - 2026-10-30 · lesson · `lessons/2026-10-30-streebog-constants-from-strings.md` · Стрибог (ГОСТ Р 34.11-2012): восстановление итерационных констант из строк-шаблонов — CP1251 → hex UPPER → ASCII → Streebog-512 → разворот байтов; проверка по контрольным парам; алгоритм поиска выпавшей позиции.
 - 2026-10-18 · import · `lessons/2026-10-18-corpus-import.md` · Импорт обезличенного корпуса техник из архивных серий (crypto/web/stego/forensics/osint/interactive); флаги удалены по политике.
 

@@ -11,6 +11,7 @@
 - Уроки A/D и CVE-уроки сжаты до ≤40 строк (детали — в `local/tactics/`, `local/toolbox/`).
 - `tools/check_package.ps1`: новая проверка — уроки не длиннее 40 непустых строк (RESULT 1 при нарушении).
 - Новый урок (обезличенный): восстановление итерационных констант Стрибога из строк-шаблонов (`lessons/2026-10-30-streebog-constants-from-strings.md`).
+- Новый инструмент: `toolbox/net_session.py` — интерактивный TCP-клиент без PTY (Windows-safe) для netcat-челленджей (host/port, шаги interactions: expect/send/wait).
 
 ## 0.6.3 — 2026-10-27
 
