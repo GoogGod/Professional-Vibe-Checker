@@ -6,8 +6,6 @@
 
 - 2026-11-02 · lesson · `lessons/2026-11-02-crypto-glyph-substitution-freq-table.md` · Визуальный шифр: сетка глифов + легенда + таблица частот → моноалфавитная подстановка биграмм; полный текст перед выбором слова; флаг hash(слово).
 - 2026-11-02 · lesson · `lessons/2026-11-02-crypto-sha256-length-extension.md` · Подпись sha256(secret||msg) → length extension: секрет = sha256(pass).hexdigest() (64 байта), дописывание padding+append к валидной паре из логов; один action на сообщение, критичные первыми.
-- 2026-11-02 · skill · `skills/crypto-glyph-substitution/SKILL.md` · Визуальные шифры (эмодзи/глифы + легенда + таблица частот): растеризация Form XObject → кластеризация → частотный анализ биграмм; редкое семантически «выпадающее» слово.
-- 2026-11-02 · skill · `skills/crypto-sha256-length-extension/SKILL.md` · Length extension для sha256(secret||msg) по валидной паре; secret_len=64 (hex); один action на сообщение, очередь раз в ~5 сек.
 - 2026-10-30 · tool · `toolbox/net_session.py` · Интерактивный TCP-клиент без PTY (Windows-safe) для netcat-челленджей: `host`/`port` + шаги `interactions` (`expect`-regex, `send`, `wait`); без шагов — читает до таймаута; возвращает журнал обмена.
 - 2026-10-30 · lesson · `lessons/2026-10-30-streebog-constants-from-strings.md` · Стрибог (ГОСТ Р 34.11-2012): восстановление итерационных констант из строк-шаблонов — CP1251 → hex UPPER → ASCII → Streebog-512 → разворот байтов; проверка по контрольным парам; алгоритм поиска выпавшей позиции.
 - 2026-10-18 · import · `lessons/2026-10-18-corpus-import.md` · Импорт обезличенного корпуса техник из архивных серий (crypto/web/stego/forensics/osint/interactive); флаги удалены по политике.
