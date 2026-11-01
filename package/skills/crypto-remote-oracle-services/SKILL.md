@@ -28,7 +28,7 @@ description: Используй для криптографических сер
 ## Готовые имплементации
 - `knowledge-base/local/lessons/2026-11-01-rsa-lsb-oracle.md`
 - `knowledge-base/local/lessons/2026-11-01-hmac-blockxor-forge.md`
-- `sessions/conv-84/toolbox_платформа/rsa_lsb_oracle.py`, `hmac_blockxor_forge.py`
+- `toolbox/платформа-limited/rsa_lsb_oracle.py`, `toolbox/платформа-limited/hmac_blockxor_forge.py`
 
 ## Грабли
 - Сначала прочитать исходник сервиса (если есть) — он даёт точные поля/порты.
