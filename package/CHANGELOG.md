@@ -2,6 +2,21 @@
 
 Формат: версия — дата — кратко. Все изменения фиксируются; старые записи не удаляются.
 
+## 0.7.0 — 2026-11-02
+
+Расширение крипто-пакета: оракулы, length extension, визуальные шифры; WOPI-медиа-травесал; дисциплина «полный текст перед словом».
+
+- Новый скилл `crypto-remote-oracle-services`: RSA LSB/parity-оракул (бинарный поиск в [0,n), 2048 запросов) и HMAC block_xor-форджинг (сведение к 4 байтам XOR), готовые рецепты и скрипты.
+- Новый скилл `crypto-sha256-length-extension`: подпись `sha256(secret||msg)` — length extension по валидной паре из логов; `secret = sha256(password).hexdigest().encode()` (64 байта); один action на сообщение, критичные первыми.
+- Новый скилл `crypto-glyph-substitution`: визуальные шифры (сетка эмодзи/глифов + легенда + таблица частот) → моноалфавитная подстановка биграмм; полный текст перед выбором слова; редкое семантически «выпадающее» слово.
+- Новый скилл `web-office-wopi-collabora`: WOPI/Collabora офисные редакторы — media traversal (executescript UNO → downloadas → /cool/media).
+- Новые уроки (обезличенные): `2026-11-01-rsa-lsb-oracle.md`, `2026-11-01-hmac-blockxor-forge.md`, `2026-11-01-misc-reversed-operations-order.md`, `2026-11-01-office-libreoffice-wopi-media-traversal-solved.md`, `2026-11-02-crypto-glyph-substitution-freq-table.md`, `2026-11-02-crypto-sha256-length-extension.md`; `2026-10-30-streebog-constants-from-strings.md` переименован в `2026-10-30-hash-constants-from-strings.md`.
+- `ctf-router`: добавлены сигнатуры новых скиллов (length extension: `sig_hex_*`/`msg_hex_*` + логи ok/incorrect; визуальный шифр: сетка глифов + легенда + таблица частот + флаг `hash(слово)`).
+- `crypto-solver-archive`: рецепты восстановления одноразовых глобальных ключей из нескольких подписей (Лампорт), SSRF-байпас чтения исходников (`/proc/self/cwd`), каскад оракулов для кастомного блочного шифра, LFSR с известным префиксом (Berlekamp-Massey), DH-MITM B'=1.
+- `interactive-services-playbook`: обновление по полевым сервисам.
+- Privacy scrub: инстанс-URL заменены на плейсхолдеры (`http://INSTANCE_URL`, `http://TARGET:PORT`), реальные флаги убраны из уроков и toolbox.
+- Новые инструменты: `toolbox/docus/*` (WOPI-медиа-травесал подборка), `toolbox/платформа-limited/*` (rsa_lsb_oracle.py, hmac_blockxor_forge.py).
+
 ## 0.6.4 — 2026-10-30
 
 Публикационная готовность + дисциплина уроков.
