@@ -10,7 +10,7 @@
 7. `GET /cool/<enc_wopi_src>/download/<id>?WOPISrc=<enc>&compat=/ws` → найти `src="...cool/media?..."`.
 8. `GET /cool/media?WOPISrc=..&ServerId=..&ViewId=..&Tag=<TAG>` → тело = ФЛАГ.
 
-Скилл с этим рецептом: `web-office-wopi-collabora`. Не трать время на SSRF/convert-to/макросы/фетч чужих документов.
+Не трать время на SSRF/convert-to/макросы/фетч чужих документов.
 
 ## Итог
 Флаг получен с главной страницы инстанса (формат `ctfcup{...}`); инстанс — эфемерный URL, изменяется между запусками (брать из задания/трафика).
