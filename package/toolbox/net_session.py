@@ -1,20 +1,13 @@
 # -*- coding: utf-8 -*-
 """net_session: интерактивный TCP-клиент без PTY (Windows-safe).
 
-Параметры — JSON в stdin (среда: TOOL_NET_SESSION). Схема:
-  host  (str, обязательный)  — хост/IP
-  port  (int, обязательный)  — TCP-порт
-  timeout (float, опц.)      — общий таймаут сек (default 15)
-  recv_bytes (int, опц.)     — размер буфера чтения (default 65536)
-  interactions (list, опц.)  — шаги диалога:
-      [{"expect": "regex промпта", "send": "строка (обычно с \\n)", "wait": 1.0}]
-    Без interactions — просто читает всё, что придёт, до таймаута.
-
-Внимание: серверы-челленджи ждут строки, заканчивающиеся переводом строки;
-send почти всегда должен заканчиваться на "\\n".
-
-Также принимается строка "host:port" либо "host port" (или "nc host port")
-в поле args как уступка конвенциям netcat.
+Параметры — JSON в stdin. Схема:
+  host (str, обяз.), port (int, обяз.), timeout (float, опц., default 15),
+  recv_bytes (int, опц., default 65536),
+  interactions (list, опц.): [{"expect": "regex", "send": "строка (обычно с \n)", "wait": 1.0}]
+Без interactions — просто читает данные до таймаута.
+Также принимается "host:port" / "host port" / "nc host port" в поле args.
+Возвращает журнал обмена: recv, prompt_matched, send.
 """
 import json
 import re
@@ -28,7 +21,6 @@ DEFAULT_RECV = 65536
 
 
 def parse_args_string(s):
-    """Минимальный fallback для строковых args: 'host:port'|'host port'|JSON."""
     s = (s or "").strip()
     if not s:
         return {}
@@ -96,7 +88,7 @@ def main():
     host, port, timeout, recv_bytes, interactions = resolve_params(params)
     if not host or not port:
         print(json.dumps({
-            "error": "callbackжны host и port: {\"host\":\"...\",\"port\":N} (или args: \"host:port\")"
+            "error": 'нужны host и port: {"host":"...","port":N} (или args: "host:port")'
         }, ensure_ascii=False))
         return
 
@@ -110,10 +102,10 @@ def main():
 
     buf = b""
     out = []
-    deadline = time.time() + timeout
 
-    def pump(until):
+    def pump(duration):
         nonlocal buf
+        until = time.time() + duration
         while time.time() < until:
             try:
                 chunk = s.recv(recv_bytes)
@@ -124,38 +116,45 @@ def main():
                 return True
         return True
 
-    def drain():
+    def drain_all():
         nonlocal buf
         if buf:
             out.append({"type": "recv", "data": buf.decode(errors="replace")})
             buf = b""
 
+    def seek(pat, budget):
+        until = time.time() + budget
+        while time.time() < until:
+            if re.search(pat, buf.decode(errors="replace"), re.S):
+                return True
+            if not pump(0.5):
+                return bool(re.search(pat, buf.decode(errors="replace"), re.S))
+        return re.search(pat, buf.decode(errors="replace"), re.S) is not None
+
     if not interactions:
-        pump(deadline)
-        drain()
+        pump(timeout)
+        drain_all()
         s.close()
         print(json.dumps(out, ensure_ascii=False, indent=2))
         return
 
-    alive = pump(deadline)
-    drain()
+    alive = True
     for step in interactions:
         expect = step.get("expect")
         send = step.get("send", "\n")
         wait = float(step.get("wait", 1))
         if expect:
-            extra = time.time() + max(wait, 5)
-            while time.time() < extra:
-                if not pump(time.time() + 0.5):
-                    break
-                if re.search(expect, buf.decode(errors="replace"), re.S):
-                    break
-            if re.search(expect, buf.decode(errors="replace"), re.S):
+            found = seek(expect, max(wait, 5.0))
+            if found:
                 out.append({"type": "prompt_matched", "pattern": expect})
         if alive:
-            s.sendall(send.encode() if isinstance(send, str) else send)
-            out.append({"type": "send", "data": send})
-        alive = pump(time.time() + wait) and alive
+            try:
+                s.sendall(send.encode() if isinstance(send, str) else send)
+                out.append({"type": "send", "data": send})
+            except OSError:
+                alive = False
+        if alive:
+            alive = pump(wait)
     try:
         s.settimeout(3)
         while True:
@@ -165,7 +164,7 @@ def main():
             buf += chunk
     except Exception:
         pass
-    drain()
+    drain_all()
     s.close()
     print(json.dumps(out, ensure_ascii=False, indent=2))
 

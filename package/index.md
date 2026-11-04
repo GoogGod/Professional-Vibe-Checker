@@ -7,7 +7,8 @@
 - 2026-11-04 · lesson · `lessons/2026-11-04-pwn-post-exploitation-single-command.md` · PWN: пост-эксплуатация — одна команда за запуск вместо интерактивного шелла
 - 2026-11-04 · lesson · `lessons/2026-11-04-pwn-debugging-discipline.md` · PWN: дисциплина отладки — как НЕ растрачивать время (разбор сессии)
 - 2026-11-04 · tool · `toolbox/pwn/heap_tcache_hook.py` · Каркас heap-menu: leak GOT → free_hook=system
-- 2026-10-30 · tool · `toolbox/net_session.py` · Интерактивный TCP-клиент без PTY (Windows-safe) для netcat-челленджей: `host`/`port` + шаги `interactions` (`expect`-regex, `send`, `wait`); без шагов — читает до таймаута; возвращает журнал обмена.
+- 2026-10-30 · tool · `toolbox/net_session.py` · Интерактивный TCP-клиент без PTY (Windows-safe) для netcat-челленджей: `host`/`port` + шаги `interactions` (`expect`-regex, `send`, `wait`); без шагов — читает до таймаута; возвращает журнал обмена. Обновлён 2026-11-04: не чистит буфер перед первым шагом, `seek()` ждёт regex, `send` — после матчинга промпта, обработка `OSError`, финальный recv; пользовательская тулза ARTEX `net_session` — обёртка над этим файлом.
+- 2026-11-04 · tool · `toolbox/py_run.py` · Локальный запуск Python-кода/файла с stdin/args/таймаутом; пользовательская тулза ARTEX `py_run`.
 
 ## Как добавлять
 
