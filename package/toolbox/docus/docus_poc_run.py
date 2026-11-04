@@ -184,11 +184,11 @@ def solve(instance_url):
         print(f"[+] Media HTTP {r.status_code}, {len(r.content)} bytes")
         print(body, end="" if body.endswith("\n") else "\n")
         r.raise_for_status()
-        flag = re.search(r"ПЛАТФОРМА\{[^}\r\n]+\}", body)
+        flag = re.search(r"flag\{[^}\r\n]+\}", body)
         if flag:
             print(f"[+] FLAG: {flag.group(0)}")
             return flag.group(0)
-        fail("Media request succeeded but the response did not contain a ПЛАТФОРМА flag")
+        fail("Media request succeeded but the response did not contain a flag")
     finally:
         try:
             ws.close()
