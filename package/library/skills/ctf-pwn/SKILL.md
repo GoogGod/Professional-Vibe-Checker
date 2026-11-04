@@ -194,6 +194,38 @@ Leak libc via `puts@PLT(puts@GOT)`, return to vuln, stage 2 with `system("/bin/s
 
 **ROT13-encoded format string:** When input is ROT13/Caesar-transformed before reaching `printf`, pre-encode the format string payload with the inverse transform so it arrives intact. See [format-string.md](format-string.md#format-string-exploit-through-rot13-encoding-sunshinectf-2018).
 
+## Canary Leak via Format String → gets Overflow → ret2exec
+
+**Pattern:** Menu prints `printf(name)`, then reads with `gets(dest)`. Leak canary with `%15$p` (position typically 10–20 on x86-64), build `'A'*offset + canary + 'B'*8 + ret`, where return target is an existing `lea rax,[cmd]; mov rdi,rax; call system@plt` fragment (find via `strings`-adjacent disassembly). No full ROP needed — reuse existing `system(cmd)` block.
+
+**Gotchas:** format output stops at first space, so use `%15$p` (no spaces); verify canary low byte = `0x00`; if output is suppressed, canary mismatch.
+
+## Shellcode: bytewise Path Write + open/read/write
+
+**Pattern:** Executable stack (PIE, NX off, GNU_STACK RWE), gadget `jmp rsi`, `read(0, buf, 0x80)`. Leak PIE base via a function that prints its own address; payload: `jmp rel +0x1e` + NOP*14 + saved rbp + `p64(base+jmp_rsi)` + shellcode. Shellcode: `lea rbx,[rsp+0x200]`, bytewise `mov byte [rbx+i], ch` path, then `open(path,0,0)` → `read(fd,rbx,0xff)` → `write(1,rbx,n)`.
+
+**Gotchas:**
+- `scanf` buffers input: data sent in one burst is NOT received by a later `read()` — send staged, waiting for prompts.
+- `push imm32` writes bytes without reversal and is limited to 4 bytes; for longer paths use bytewise `mov byte` writes.
+- `execve("/bin/sh")` with NULL argv/envp often crashes; open/read/write is stable (no argv).
+- Buffer below RSP (`rsp-0x100`) hits guard page — write above `rsp+0x200`.
+- Use write() marker bytes between stages to confirm shellcode execution.
+
+## Transport Wrappers: pty Canonical Mode & scanf Buffering
+
+**Pattern:** Remote service behind a pty (canonical mode) and `scanf`-driven input imposes a send protocol; violating it breaks the exploit, not the logic.
+- pty canonical: lines ≤ ~80 bytes (MaxCanon), byte `0x13` (XOFF) stops output; after an 80-byte line an extra `\n` remains queued.
+- `scanf("%Ns")` buffers: sending input in one burst does not deliver it to a later `read()` — send staged after each prompt.
+
+**Rules:** (1) send short lines and wait for prompts; (2) drain leftover `\n` before the main stage; (3) filter XOFF from output when parsing; (4) for long ROP chains use two-phase input (`read#1` → `read#2`), not one long line; (5) if local works but remote behaves oddly, test the transport with a marker first.
+
+## Process Hygiene (why exploits stall)
+
+- One binary per port: identify the REMOTE binary before investing in local analysis (task ports can rotate).
+- Evolve one exploit script; do not spawn `_v2/_v3/_finalN` copies.
+- Instrument with markers (write stages, `sleep`, banner echoes) to localize failure.
+- Prefer pwntools (`cyclic`, `fmtstr_payload`, `ROP`) for speed; keep a transport adapter (pty/scanf) separate from the core exploit.
+
 ## Kernel Exploitation
 
 **addr_limit bypass via failed file open:** When a kernel module sets `addr_limit = KERNEL_DS` but fails to restore it on error paths, force the error (e.g., make target file a directory) to retain kernel memory access from userspace `read()`/`write()`. See [kernel-techniques.md](kernel-techniques.md#kernel-addr_limit-bypass-via-failed-file-open-midnight-sun-ctf-2018).

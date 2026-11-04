@@ -3,11 +3,12 @@
 Формат строки: `дата · тип · путь · краткий итог`. Новые записи добавляй сверху.
 
 ## Записи
-- 2026-11-04 · lesson · `lessons/2026-11-04-hardware-logic-circuit-truth-table.md` · Логическая схема: восстановление булевой логики по таблице истинности
-- 2026-11-04 · lesson · `lessons/2026-11-04-hardware-proteus-avr-firmware.md` · Proteus 8 + AVR: разбор проекта САПР и прошивки (Intel HEX)
-- 2026-11-04 · lesson · `lessons/2026-11-04-hardware-spi-master-injection.md` · SPI / аппаратная инъекция: side-channel PIN + подмена firmware регистра
-- 2026-11-04 · lesson · `lessons/2026-11-04-iot-mqtt-broker-retained.md` · MQTT/IoT: разведка брокера, креды и retained-флаг
-- 2026-11-04 · tactic · `tactics/hardware-embedded-iot.md` · Hardware/Embedded/IoT: схемы, прошивки, шины, MQTT
+- 2026-11-04 · lesson · `lessons/2026-11-04-pwn-fmtstr-canary-leak-gets-ret2exec.md` · PWN: утечка canary через формат-строку и переполнение gets → готовый вызов system(cmd)
+- 2026-11-04 · lesson · `lessons/2026-11-04-pwn-shellcode-open-read-write-bytewise.md` · PWN: shellcode open/read/write с построением пути посимвольно (bytewise)
+- 2026-11-04 · lesson · `lessons/2026-11-04-pwn-transport-pty-canonical-xoff.md` · PWN: транспортные обёртки — pty canonical mode и scanf-буферизация
+- 2026-11-04 · tool · `toolbox/pwn/pty_transport.py` · Транспорт pty (canonical/XOFF)
+- 2026-11-04 · tool · `toolbox/pwn/bytewise_shellcode.py` · Генератор open/read/write bytewise shellcode
+- 2026-11-04 · tool · `toolbox/pwn/fmt_leak_helper.py` · Скан позиций %N$p
 - 2026-10-30 · tool · `toolbox/net_session.py` · Интерактивный TCP-клиент без PTY (Windows-safe) для netcat-челленджей: `host`/`port` + шаги `interactions` (`expect`-regex, `send`, `wait`); без шагов — читает до таймаута; возвращает журнал обмена.
 
 ## Как добавлять
