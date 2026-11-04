@@ -2,6 +2,16 @@
 
 Формат: версия — дата — кратко. Все изменения фиксируются; старые записи не удаляются.
 
+## 0.8.0 — 2026-11-04
+
+Hardware update: эмоты и уроки по аппаратным/IoT-задачам; продвижение публичной коллекции уроков; новая тактика.
+
+- Новый скилл hardware-embedded-iot-playbook: Proteus 8 (.pdsprj=ZIP, ROOT.DSN), AVR Intel HEX (avr-objdump, XOR-ключи), SPI side-channel (PIN по lit_windows, подмена CORE_TEMP), логические схемы (таблица истинности → битовый вектор), MQTT (retained-флаг, креды, признаки битого инстанса).
+- Новые уроки: 2026-11-04-hardware-proteus-avr-firmware.md, 2026-11-04-hardware-spi-master-injection.md, 2026-11-04-hardware-logic-circuit-truth-table.md, 2026-11-04-iot-mqtt-broker-retained.md, 2026-11-04-crypto-lfsr-berlekamp-massey.md.
+- Новая тактика hardware-embedded-iot.md; README тактик дополнен.
+- Продвинуто 44 урока из local-зоны в публичный пакет (обезличенность: флаги → [FLAG], инстанс-URL → [instance], без имён площадок); коллекция уроков выросла с 14 до 58.
+- Обновлён реестр index.md; переименован локальный toolbox (privacy) — инструменты сгруппированы по темам.
+
 ## 0.7.2 — 2026-11-02
 
 Объединение временных «скиллов-копий» в профильные скиллы (не удаление знаний).
