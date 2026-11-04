@@ -147,6 +147,15 @@ bash -c '{ echo "cmd1"; echo "cmd2"; sleep 1; } | nc host port'
 
 **Pattern:** `scanf("%d")` without sign check; negative quantity * price = negative total, bypasses balance check. See [overflow-basics.md](overflow-basics.md).
 
+## Negative Index OOB → GOT Overwrite (Global Array Menu)
+
+**Pattern:** Global array `nums[]` access via `nums[idx] = val`, index checked ONLY on the upper bound (`idx <= MAX`), negatives allowed. Compute `idx = (target_addr - base_addr) / elem_size` (e.g., puts@GOT 0x404000, base 0x404080, elem 8 → `nums[-16]` → overwrite GOT with `system@plt` → every `puts` becomes `system`. Menu trigger calls `puts(user_input)`.
+
+**Gotchas:**
+- `scanf("%s")` reads ONE WORD — commands with spaces break (`cat /app/flag` → first word executes, rest consumed by later `scanf`). Use `cat<flag` / `cat</app/flag`.
+- If local exploit works but remote doesn't: don't panic early. Do blind diagnostics: crash-test with garbage (SIGSEGV → primitive works), then blind-scan indices (e.g., `-24…-12`) with a marker command (`ls`) to confirm the actual offset on the server.
+- GOT leak (e.g., `printf@GOT`) may be unnecessary if target address (`system@plt`) is fixed (no PIE).
+
 ## Canary-Aware Partial Overflow
 
 **Pattern:** Overflow `valid` flag between buffer and canary. Use `./` as no-op path padding for precise length. See [overflow-basics.md](overflow-basics.md) and [advanced.md](advanced.md) for full exploit chain.

@@ -30,7 +30,7 @@ print(m.to_bytes((m.bit_length()+7)//8, 'big'))
 - Запросы: `n.bit_length()` (2048 для 2048-битного RSA); ~0.1-0.2 с/запрос.
 
 ## Готовые имплементации
-- `toolbox/платформа-limited/rsa_lsb_oracle.py` (использовать как эталон);
+- `toolbox/crypto-limited/rsa_lsb_oracle.py` (использовать как эталон);
 - ускорить можно пулом соединений (requests.Session / http.client keep-alive).
 
 ## Типичные грабли

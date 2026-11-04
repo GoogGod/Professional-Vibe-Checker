@@ -13,7 +13,7 @@
 
 Чистка публичного пакета от внутренних маркеров и полировка уроков.
 
-- Удалены внутренние идентификаторы сессий платформы (`conv-*`) из `CHANGELOG.md`, урока WOPI-медиа-травесала и скилла `crypto-remote-oracle-services`; пути к PoC/солверам заменены на относительные (`toolbox/docus/...`, `toolbox/платформа-limited/...`).
+- Удалены внутренние идентификаторы сессий платформы (`conv-*`) из `CHANGELOG.md`, урока WOPI-медиа-травесала и скилла `crypto-remote-oracle-services`; пути к PoC/солверам заменены на относительные (`toolbox/docus/...`, `toolbox/crypto-limited/...`).
 - Урок WOPI-медиа-травесала сокращён до лимита 40 непустых строк (проверка `check_package`).
 
 ## 0.7.0 — 2026-11-02
@@ -29,7 +29,7 @@
 - `crypto-solver-archive`: рецепты восстановления одноразовых глобальных ключей из нескольких подписей (Лампорт), SSRF-байпас чтения исходников (`/proc/self/cwd`), каскад оракулов для кастомного блочного шифра, LFSR с известным префиксом (Berlekamp-Massey), DH-MITM B'=1.
 - `interactive-services-playbook`: обновление по полевым сервисам.
 - Privacy scrub: инстанс-URL заменены на плейсхолдеры (`http://INSTANCE_URL`, `http://TARGET:PORT`), реальные флаги убраны из уроков и toolbox.
-- Новые инструменты: `toolbox/docus/*` (WOPI-медиа-травесал подборка), `toolbox/платформа-limited/*` (rsa_lsb_oracle.py, hmac_blockxor_forge.py).
+- Новые инструменты: `toolbox/docus/*` (WOPI-медиа-травесал подборка), `toolbox/crypto-limited/*` (rsa_lsb_oracle.py, hmac_blockxor_forge.py).
 
 ## 0.6.4 — 2026-10-30
 

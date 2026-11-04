@@ -3,12 +3,12 @@
 Формат строки: `дата · тип · путь · краткий итог`. Новые записи добавляй сверху.
 
 ## Записи
-
-- 2026-11-02 · lesson · `lessons/2026-11-02-crypto-glyph-substitution-freq-table.md` · Визуальный шифр: сетка глифов + легенда + таблица частот → моноалфавитная подстановка биграмм; полный текст перед выбором слова; флаг hash(слово).
-- 2026-11-02 · lesson · `lessons/2026-11-02-crypto-sha256-length-extension.md` · Подпись sha256(secret||msg) → length extension: секрет = sha256(pass).hexdigest() (64 байта), дописывание padding+append к валидной паре из логов; один action на сообщение, критичные первыми.
+- 2026-11-04 · lesson · `lessons/2026-11-04-hardware-logic-circuit-truth-table.md` · Логическая схема: восстановление булевой логики по таблице истинности
+- 2026-11-04 · lesson · `lessons/2026-11-04-hardware-proteus-avr-firmware.md` · Proteus 8 + AVR: разбор проекта САПР и прошивки (Intel HEX)
+- 2026-11-04 · lesson · `lessons/2026-11-04-hardware-spi-master-injection.md` · SPI / аппаратная инъекция: side-channel PIN + подмена firmware регистра
+- 2026-11-04 · lesson · `lessons/2026-11-04-iot-mqtt-broker-retained.md` · MQTT/IoT: разведка брокера, креды и retained-флаг
+- 2026-11-04 · tactic · `tactics/hardware-embedded-iot.md` · Hardware/Embedded/IoT: схемы, прошивки, шины, MQTT
 - 2026-10-30 · tool · `toolbox/net_session.py` · Интерактивный TCP-клиент без PTY (Windows-safe) для netcat-челленджей: `host`/`port` + шаги `interactions` (`expect`-regex, `send`, `wait`); без шагов — читает до таймаута; возвращает журнал обмена.
-- 2026-10-30 · lesson · `lessons/2026-10-30-streebog-constants-from-strings.md` · Стрибог (ГОСТ Р 34.11-2012): восстановление итерационных констант из строк-шаблонов — CP1251 → hex UPPER → ASCII → Streebog-512 → разворот байтов; проверка по контрольным парам; алгоритм поиска выпавшей позиции.
-- 2026-10-18 · import · `lessons/2026-10-18-corpus-import.md` · Импорт обезличенного корпуса техник из архивных серий (crypto/web/stego/forensics/osint/interactive); флаги удалены по политике.
 
 ## Как добавлять
 
