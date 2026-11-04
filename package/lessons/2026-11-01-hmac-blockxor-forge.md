@@ -16,7 +16,7 @@
 - Отправляем `{"msg":"give_me_flag_plz", "mac": mac_in.hex()}` → флаг.
 
 ## Готовые имплементации
-- `toolbox/платформа-limited/hmac_blockxor_forge.py`.
+- `toolbox/crypto-limited/hmac_blockxor_forge.py`.
 
 ## Почему это работает
 - Сравнение идёт не по дайджесту, а по свёрнутому значению — коллизия
