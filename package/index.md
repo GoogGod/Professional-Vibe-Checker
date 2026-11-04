@@ -3,12 +3,10 @@
 Формат строки: `дата · тип · путь · краткий итог`. Новые записи добавляй сверху.
 
 ## Записи
-- 2026-11-04 · lesson · `lessons/2026-11-04-pwn-fmtstr-canary-leak-gets-ret2exec.md` · PWN: утечка canary через формат-строку и переполнение gets → готовый вызов system(cmd)
-- 2026-11-04 · lesson · `lessons/2026-11-04-pwn-shellcode-open-read-write-bytewise.md` · PWN: shellcode open/read/write с построением пути посимвольно (bytewise)
-- 2026-11-04 · lesson · `lessons/2026-11-04-pwn-transport-pty-canonical-xoff.md` · PWN: транспортные обёртки — pty canonical mode и scanf-буферизация
-- 2026-11-04 · tool · `toolbox/pwn/pty_transport.py` · Транспорт pty (canonical/XOFF)
-- 2026-11-04 · tool · `toolbox/pwn/bytewise_shellcode.py` · Генератор open/read/write bytewise shellcode
-- 2026-11-04 · tool · `toolbox/pwn/fmt_leak_helper.py` · Скан позиций %N$p
+- 2026-11-04 · lesson · `lessons/2026-11-04-pwn-museum-tcache-hook-system.md` · PWN: tcache poisoning → __free_hook = system (heap menu, no PIE)
+- 2026-11-04 · lesson · `lessons/2026-11-04-pwn-post-exploitation-single-command.md` · PWN: пост-эксплуатация — одна команда за запуск вместо интерактивного шелла
+- 2026-11-04 · lesson · `lessons/2026-11-04-pwn-debugging-discipline.md` · PWN: дисциплина отладки — как НЕ растрачивать время (разбор сессии)
+- 2026-11-04 · tool · `toolbox/pwn/heap_tcache_hook.py` · Каркас heap-menu: leak GOT → free_hook=system
 - 2026-10-30 · tool · `toolbox/net_session.py` · Интерактивный TCP-клиент без PTY (Windows-safe) для netcat-челленджей: `host`/`port` + шаги `interactions` (`expect`-regex, `send`, `wait`); без шагов — читает до таймаута; возвращает журнал обмена.
 
 ## Как добавлять
