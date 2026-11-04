@@ -143,6 +143,27 @@ bash -c '{ echo "cmd1"; echo "cmd2"; sleep 1; } | nc host port'
 
 **Pattern:** Menu create/modify/delete on structs with data buffer + pointer. Overflow name into pointer field with GOT address, then write win address via modify. See [overflow-basics.md](overflow-basics.md) for full exploit and GOT target selection table.
 
+**Heap object layout (common):** `malloc(0x18)` object `[name*][desc*][tag]`, `name=malloc(0x40)`, `desc=malloc(size)`. `edit` calls `read_str(desc, 0xff)`; `inspect` prints 8 bytes at `desc` (arbitrary read after pointer swap). If `edit` overflows `desc` chunk, you can overwrite the NEXT object's pointers (e.g., `objB->name`, `objB->desc`): payload = `CMD + pad + prev_size + p64(0x20) + p64(nameB) + p64(descB)`.
+
+**Two-stage pointer swap (museum pattern):**
+1. Overflow `descB = puts@GOT` → `inspect B` → leak puts → `libc_base` (no PIE → static GOT `0x602020…`).
+2. Overflow `descB = __free_hook` → `edit B` writes `system` (confirm via inspect readback == 0 before triggering).
+3. `remove A` → `free(descA) = system(CMD)`.
+
+**Command length limit:** `read_str(desc)` reads at most `0x3f` bytes → the command for `system()` must be ≤ 63 bytes (longer → garbage in stdin → "Unknown option").
+
+## Tcache Poisoning → __free_hook = system
+
+**Pattern:** tcache (glibc < 2.34) single-linked freelist; `free_hook` is writable. Overwrite a freed chunk's next pointer to `__free_hook` (via overflow/UAF), then allocate until malloc returns `__free_hook`, write `system`. Trigger `free(controlled_buf)` with `"/bin/sh"`/command in the buffer. See [lessons/2026-11-04-pwn-museum-tcache-hook-system.md](lessons/2026-11-04-pwn-museum-tcache-hook-system.md).
+
+## Post-Exploitation: One Command per Run
+
+**Pattern:** Instead of an interactive `/bin/sh` (no TTY, buffering, timing pain), call `system("single command")` per run — deterministic and automatable. Requirements: command ≤ 63 bytes (read_str limit); read output directly from socket (`setblocking(False)` + recv loop until silence ~0.3–0.5s); try flag paths (`flag.txt`, `/app/flag.txt`, `/flag`, `/home/task/flag.txt`). See [lessons/2026-11-04-pwn-post-exploitation-single-command.md](lessons/2026-11-04-pwn-post-exploitation-single-command.md).
+
+## Debugging Discipline (avoid stalling)
+
+**Antipatterns observed:** version chaos (~20 scripts per task instead of evolving one), blind `sleep` instead of `recv_until(": ")`, hex-dumping everything, and going remote before local validation. **Do:** one skeleton file (connection + menu primitives + `recv_until` + `recv_all(timeout)`); manual menu walk first; run EVERY stage locally before remote; readback after each write; use marker strings (`MARK_START/END`), not timing; pass CMD as a parameter, not a constant. See [lessons/2026-11-04-pwn-debugging-discipline.md](lessons/2026-11-04-pwn-debugging-discipline.md).
+
 ## Signed Integer Bypass
 
 **Pattern:** `scanf("%d")` without sign check; negative quantity * price = negative total, bypasses balance check. See [overflow-basics.md](overflow-basics.md).
