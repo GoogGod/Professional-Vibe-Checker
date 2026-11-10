@@ -184,7 +184,7 @@ for rotation in range(len(outer)):
     rotated = inner[rotation:] + inner[:rotation]
     mapping = {outer[i]: rotated[i] for i in range(len(outer))}
     decrypted = ''.join(mapping.get(c, c) for c in ciphertext)
-    if decrypted.startswith("METACTF{"):
+    if decrypted.startswith("FLAG{"):
         print(decrypted)
 ```
 
@@ -392,8 +392,8 @@ known_hash = '9f2a579716af14400c9ba1de8682ca52c17b3ed4235ea17ac12ae78ca24876ef'
 for p in permutations(ambiguous_chars):
     mapping = dict(zip(ambiguous_chars, p))
     candidate = ''.join(mapping.get(c, c) for c in partial_flag)
-    if sha256(('ASIS_' + candidate).encode()).hexdigest() == known_hash:
-        print(f"Flag: ASIS_{candidate}")
+    if sha256(('FLAG_' + candidate).encode()).hexdigest() == known_hash:
+        print(f"Flag: FLAG_{candidate}")
         break
 ```
 
@@ -573,7 +573,7 @@ for c1 in range(len(s)):
 
 **Pattern (Mission Impossible):** Nihilist cipher encrypts via Polybius square lookup + additive numeric key. Each plaintext letter becomes a two-digit Polybius coordinate, then the key's digit stream is added to produce ciphertext digits.
 
-**Key insight:** The flag format `midnight{...}` contains two `i` characters at known positions. Both must produce the same Polybius coordinates (e.g., `24`), so their ciphertext differences directly reveal two key digit pairs — enough to constrain the additive key. Every valid Polybius coordinate must be in range 1-5, which prunes invalid key candidates aggressively.
+**Key insight:** The flag format `[FLAG]` contains two `i` characters at known positions. Both must produce the same Polybius coordinates (e.g., `24`), so their ciphertext differences directly reveal two key digit pairs — enough to constrain the additive key. Every valid Polybius coordinate must be in range 1-5, which prunes invalid key candidates aggressively.
 
 **Recovery approach:**
 ```python

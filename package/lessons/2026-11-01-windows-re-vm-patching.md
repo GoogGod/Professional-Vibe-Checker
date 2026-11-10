@@ -27,5 +27,5 @@
 - Read-тул требует `file_path` — отсутствие → `missing required property "file_path"`.
 
 ## Артефакты (архив)
-- `cybercup/` — zip, exe, `patch_vmm_fallback.py`, `memdump.py`, `peinfo.py`
+- `archive/` — zip, exe, `patch_vmm_fallback.py`, `memdump.py`, `peinfo.py`
   (не создан — pefile), `cmd-output/` (много пустых файлов — не читать без проверки).

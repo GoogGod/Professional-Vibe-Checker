@@ -300,7 +300,7 @@ img.transpose(Image.FLIP_LEFT_RIGHT).save('flipped.jpg')
 
 ## What3Words (W3W) Geolocation (UTCTF 2026)
 
-**Pattern (W3W1/W3W2/W3W3):** Photo of a location. Find the exact What3Words address (3-meter precision grid). Flag format: `utflag{word1.word2.word3}`.
+**Pattern (W3W1/W3W2/W3W3):** Photo of a location. Find the exact What3Words address (3-meter precision grid). Flag format: `[FLAG]`.
 
 **What3Words basics:**
 - Divides entire world into 3m x 3m squares, each with a unique 3-word address

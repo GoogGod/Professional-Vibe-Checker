@@ -6,7 +6,7 @@ ISA (RISC-V), скомпилированные скрипты (PyInstaller).
 ## Порядок действий
 1. **VM-протекторы**: найти диспетчер (VMMCALL / switch-обработчик),
    восстановить семантику инструкций, патчить выход из VM на fallback.
-   `lessons/2026-11-01-windows-re-vm-patching-cybercup.md`.
+   `lessons/2026-11-01-windows-re-vm-patching.md`.
 2. **RISC-V vector (VLE)**: векторные инструкции как «окно» в память —
    читать память через регистры-векторы, патчить PTE.
    `lessons/2026-11-01-rev-riscv-vle-pte-patch-ghostvector.md`.

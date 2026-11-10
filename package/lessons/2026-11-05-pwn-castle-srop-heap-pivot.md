@@ -37,5 +37,5 @@
 - SROP работает даже без leak libc.
 
 ## Артефакты
-- sessions/conv-119/exploit_heap_srop.py (финальный), srop_shift_sweep.py,
+- Рабочие скрипты сессии: exploit_heap_srop.py (финальный), srop_shift_sweep.py,
   remote_strace.py, STATE_final.md.

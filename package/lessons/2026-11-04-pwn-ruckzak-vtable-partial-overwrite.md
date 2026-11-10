@@ -34,5 +34,5 @@
   флагу «example_flag»; заглушка на сервере — `[FLAG]` (не путать).
 
 ## Артефакты
-- sessions/conv-116/elf_scan.py, inspect.py, exploit_local.py, exploit_remote.py,
+- Рабочие скрипты сессии: elf_scan.py, inspect.py, exploit_local.py, exploit_remote.py,
   ida_decomp.txt, ruckzak.i64, flag (локальная заглушка).

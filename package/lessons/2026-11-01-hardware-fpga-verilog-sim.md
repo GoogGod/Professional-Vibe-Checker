@@ -26,7 +26,7 @@
 - `grep` в PowerShell нет → `Select-String` / Grep-тул.
 - `Format-Hex -Count` не существует → читай HEX файлами (py) либо `Format-Hex -MaximumSize N`.
 - read `knowledge-base/local/index.md` (без `data/`) — правило: всегда проверяй полный путь
-  относительно рабочей папки сессии `[archive]/conv-NN`.
+  относительно рабочей папки сессии `[archive]`.
 
 ## Артефакты (архив)
 - `21_extracted/21/` — g_vlog.v, simchip, «21.zip» (8.2 MiB), `sim_vlog.py`, `fn_*.tsv`,

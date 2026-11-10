@@ -158,7 +158,7 @@ def is_palindromic(poly, var=t):
 - Flag format constrains the input to a narrow range
 - Challenge hints like "brute won't cut it" or "binary search"
 
-**Key insight:** For a monotone function `f`, knowing the flag format (e.g., `0xL4ugh{...}`) constrains the output to a tiny interval. Many "unknown" output digits are actually **fixed** across all valid inputs and can be determined immediately.
+**Key insight:** For a monotone function `f`, knowing the flag format (e.g., `[FLAG]`) constrains the output to a tiny interval. Many "unknown" output digits are actually **fixed** across all valid inputs and can be determined immediately.
 
 **Attack: Hierarchical Digit Recovery**
 

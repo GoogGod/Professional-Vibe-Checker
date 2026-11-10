@@ -39,6 +39,6 @@
 - Tcache-hook («Музей»): перезапись `__free_hook` = `system` через heap overflow.
 
 ## Файлы/артефакты
-- sessions/conv-117/exploit_hotel_remote.py, exp_fixed.py, clean_session.py,
+- Рабочие скрипты сессии: exploit_hotel_remote.py, exp_fixed.py, clean_session.py,
   strace_c4.py, trc2.c (LD_PRELOAD), gdb_probe*.py, solution.md.
 - Подробный клиентский разбор: lessons/2026-11-04-pwn-hotel-uaf-role-priv.md.
