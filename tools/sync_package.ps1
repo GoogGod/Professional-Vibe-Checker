@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-Sync package skills into a platform skills directory (e.g., Artex); optionally mirror the knowledge base.
+Sync package skills into a platform skills directory; optionally mirror the knowledge base.
 
 .DESCRIPTION
 Copies package/skills/* into the target skills directory.
