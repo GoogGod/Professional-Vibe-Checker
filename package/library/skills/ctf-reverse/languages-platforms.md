@@ -590,3 +590,40 @@ adb logcat | grep -i flag
 **Key insight:** `LocalBroadcastManager`-registered receivers cannot be invoked from `adb`, so the obvious "send the intent yourself" trick fails and static deobfuscation of Paranoid strings is painful. Smali patching sidesteps both: move the deobfuscation call to a path that runs automatically and redirect its output to `Log.d()`, turning a local-only receiver into a logcat-visible primitive.
 
 **References:** TAMUctf 2019 — Local News, writeup 13565
+
+
+---
+
+## Android JNI + Bionic RNG: восстановление нативного шифра и перебор входа
+
+Кейс: APK с единственным JNI-экспортом Java_..._MainActivity_processInput
+(проверить все 4 ABI: x86_64/arm64/armeabi-v7a/x86 — код может отличаться,
+но константы/enc-буфер обычно совпадают).
+
+**Стандартный скелет задачи:** пользователь вводит N букв; приложение
+возвращает расшифрованное сообщение; флаг виден, когда ввод «правильный».
+
+**Шаги:**
+1. Декомпиляция DEX (jadx) → найти processInput, понять вызов JNI.
+2. Дизассемблер нативной lib (IDA/Ghidra): восстановить ah()/dwl().
+   - Типично: seed-цепочка с 64-битным умножением и усечением,
+     затем srand(seed) и 16× 
+and() & 0xF → hex-ключ 16 символов.
+   - Расшифровка — out[36-i] = enc[i] ^ key[i%16] ^ const (циклический индекс!).
+3. **Bionic rand()/srandom() == glibc random()/srandom()** (31-словный
+   аддитивный регистр, Park-Miller init, 310 шагов прогрева).
+   - Баг-ловушка: в init-зацикливании word % 127773 и word / 127773
+     считаются в signed int32 (не unsigned) — иначе расхождение при seed ≥ 2^31.
+4. Если вход перебирается: применить паттерн ключа (жёсткие позиции из
+   префикса формата флага и его суффикса) для отсечения.
+   - Частый баг брута: символ 'd' в ключе путают с '0' (симметрия
+     hex-алфавита) → 0 хитов. Проверять условие 15-го символа!
+   - Частичная расшифровка может давать стабильные блоки (DUCKE, 1a2b})
+     у многих входов — полный флаг только у единственного входа.
+5. Перебор 52^5 ≈ 3.8e8 — реалистичен на C (минуты) с проверкой паттерна.
+   В Python — векторизация или фильтрация по условиям ключа.
+6. Верификация RNG: сгенерировать контрольные векторы нативным бинарником
+   (или сравнить с glibc gcc) до запуска полного перебора.
+
+**Ссылки на скилл:** tools.md (APK), platforms.md (Android native),
+tools-emulation.md (Unicorn для эмуляции нативной функции).
