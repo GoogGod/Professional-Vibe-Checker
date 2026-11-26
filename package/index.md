@@ -3,6 +3,7 @@
 Формат строки: `дата · тип · путь · краткий итог`. Новые записи добавляй сверху.
 
 ## Записи
+- 2026-11-26 · lesson · lessons/2026-11-26-vuln-analysis-real-cve-arvo-graphicsmagick-quantumtransfermode.md · Реальный CVE (ARVO): GraphicsMagick QuantumTransferMode + CIE Log alpha — logic error → OOB; методика vul→fix через diff (vul/fix архивы), рекомендации.
 - 2026-11-26 · lesson · lessons/2026-11-26-pwn-fmtstr-overflow-single-vuln-ret2vuln-trap.md · PWN fmtstr+overflow single-vuln: RET-выравнивание (rsp%16 для movaps), по-байтовый leak через %s-сегменты, профилирование libc по дельтам в одном процессе + брутфорс кандидатов, %hhn-перезапись GOT[printf]→system, мультицикл через MAIN (3 прохода).
 - 2026-11-24 · lesson · `lessons/2026-11-24-iot-mqtt-announcements-user-bruteforce.md` · MQTT/IoT: «туман» сенсоров + редкие подсказки `/announcements` (зацепка сюжета); перебор пользователя CONNECT/CONNACK (успех 0x00, отказ 0x86) rockyou top-20k → `duck_fan:princess`; retained-секрет читается после логина; баги: Paho username_pw_set ДО connect(), PUBACK 0x87 на запись анонимом; флаг → [FLAG], инстанс → [instance].
 - 2026-11-24 · lesson · `lessons/2026-11-24-re-cff-windows-client-protocol-blocks.md` · Сетевая CFF (REV medium): Windows-клиент, кастомный фрейм-протокол `[u32 len][тело]`; BlockImage-кадры, решение `[len=20][var=1][block_id][label]`, host-call fetch; полная спецификация кадров обеих сторон.
