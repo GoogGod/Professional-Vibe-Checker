@@ -7,3 +7,10 @@ local/
 *.log
 __pycache__/
 *.pyc
+
+# сырьё HF/датасетов — никогда в git
+*.tar.gz
+*.jsonl
+*.csv
+raw/
+data/raw/
