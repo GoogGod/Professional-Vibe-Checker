@@ -693,3 +693,30 @@ fmtstr = b"%9x%11$n" + b"\x20\x20\x60\x00\x00\x00\x00\x00"
 **Key insight:** Format-string null-byte restrictions only bite when the address precedes the format directives. Put the directives first so `printf` parses them before touching the address, then let `%$n` reference the trailing address slot.
 
 **References:** FireShell CTF 2019 — casino, writeup 12916
+
+
+---
+
+## Single-Call vuln fmtstr: RET Alignment + Bytewise Leak + Multi-Cycle (2026-11-26)
+
+**Pattern:** uln() вызывается ОДИН раз: gets(buf, 0x190, stdin); printf(buf); putchar('\n'); leave; ret, буфер 0x70, offset до ret = 0x78, Partial RELRO, NO PIE, no canary.
+
+**Главный блокер повторного входа — НЕ rbp, а выравнивание стека:**
+- Вход через 
+et (без call) сдвигает кадр на 8 байт → 
+sp%16=8 → glibc __vfprintf_internal падает на movaps %xmm0,0x40(%rsp) (SSE требует rsp%16=0).
+- Решение: добавить ПРОМЕЖУТОЧНЫЙ RET-гаджет перед целевым адресом: saved rbp | RET | TARGET — следующая функция получает выровненный стек. После этого мультицикл стабилен (5+ проходов).
+
+**Leak без NUL-обрезки (%s печатает до первого NUL):**
+- Печатать адрес по одному байту: %12|%13|%14|%15|%16|%17|, положив указатели на GOT+0..5 на позиции 12–17; первый символ каждого сегмента = байт адреса (0, если сегмент пуст).
+
+**Профилирование libc:**
+- Абсолютные адреса из РАЗНЫХ подключений нельзя сравнивать (KASLR меняется между соединениями). Дельты — только из одного процесса.
+- Целевой инстанс может иметь версию, отличную от локальной базы (напр. 2.35-0ubuntu3.18 вместо 2.35-0ubuntu3). Метод: по-байтовый leak нескольких функций в одном процессе → дельты; если профиль не найден — брутфорс кандидатов: для каждого перезаписать GOT[printf]=base+system и проверить триггером echo MARKER; id.
+
+**Финальная связка (3 прохода):**
+1. Проход 1: leak printf (%12| + адрес GOT в хвосте) + RET+MAIN.
+2. Проход 2: %hhn-перезапись трёх младших байтов GOT[printf] → system + RET+MAIN. Счётчики: %Nc с добавкой (mod 256). Короткие рукописные цепочки: %96c%12%125c%13%167c%14 (адреса на позициях 12–14).
+3. Проход 3: отправить команду — uln вызовет system(buf).
+
+**Анти-тупики:** не верить «стандартному» профилю libc без проверки; NUL в адресе ломает строковый leak; повторный вход падает из-за SSE-выравнивания (лечится RET); mtstr_payload может генерировать слишком длинные строки — писать %hhn-цепочки вручную.
